@@ -1,12 +1,16 @@
-import { DataTypes, Model } from 'sequelize';
+import { BelongsToMany, DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
+import RecetaIngredienteModel from './RecetaIngredienteModel';
+import ModeloReceta from './ModeloReceta';
 
 class ModeloIngrediente extends Model {
+
     public nombre!: string;
     public calorias! : number;
     public carbohidratos!: number;
     public grasas!: number;
     public proteinas!: number;
+
 }   
 
 ModeloIngrediente.init(
@@ -38,5 +42,13 @@ ModeloIngrediente.init(
 
   }
   );
+
+
+ModeloIngrediente.belongsToMany(ModeloReceta, {
+  through: RecetaIngredienteModel,
+  foreignKey: 'ingredienteId',
+  otherKey: 'recetaId',
+});
+
 
   export default ModeloIngrediente;
