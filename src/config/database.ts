@@ -5,8 +5,7 @@ const sequelize = new Sequelize({
   database: "cookpi",
   username: "alumno",
   password: "alumnoipm",
-  host: "db",
+  host: "localhost",
 });
-
 
 export default sequelize;

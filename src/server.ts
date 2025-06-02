@@ -1,12 +1,32 @@
 import express, { Request, Response } from 'express';
+import sequelize from './config/database';
  
+import { loginRouter } from './routes/LogInRouter';
+
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+
+ 
+
+const Sequelize = require("sequelize");
+
+app.use("/login", loginRouter);
+
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript Express!');
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+(async () => {
+  try {
+    await sequelize.sync();
+    console.log('Base de datos sincronizada');
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Error conectando a la base de datos:', error);
+  }
+})();
