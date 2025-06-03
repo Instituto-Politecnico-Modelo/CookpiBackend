@@ -10,6 +10,7 @@ class ModeloUsuario extends Model {
     public confirmado?: boolean;
     public mail?: string;
     public descripcion?: string;
+    public tokenConfirmacion?:string;
 }
 
 
@@ -40,7 +41,12 @@ ModeloUsuario.init(
     confirmado: {
       type: DataTypes.BOOLEAN,
       allowNull: true
-    }
+    },
+    tokenConfirmacion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique:true
+    },
   },
   {
     sequelize,
