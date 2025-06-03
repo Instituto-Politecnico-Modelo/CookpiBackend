@@ -4,11 +4,13 @@ import { forEachChild } from 'typescript';
 import ModeloUsuario from '../models/ModeloUsuario';
 import { createHash } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken'
-
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+ 
 
 
 export  class controllerUsuario{
-    
+
     static secretKey = "Ensaladardamal"
 
     static hashSHA256(data: string): string {
@@ -29,7 +31,6 @@ export  class controllerUsuario{
         const usuario = await ModeloUsuario.create(
             body
         );
-        
         return usuario;
     }
 
@@ -99,6 +100,15 @@ export  class controllerUsuario{
     
     }
 
+    static async updeteUsuario(body : any){
+        const libro = await ModeloUsuario.update(body, { where : {id : body.id}})
+        return libro;
+    }
 
+
+    static async deleteUsuario(body : any){
+        const libro = await ModeloUsuario.destroy({ where : {id : body.id}})
+        return libro;
+    }
 
 }
