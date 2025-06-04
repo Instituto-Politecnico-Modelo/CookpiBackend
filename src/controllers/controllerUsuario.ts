@@ -1,13 +1,13 @@
-import fs from 'fs';
-import ModeloReceta from '../models/ModeloReceta';
-import { forEachChild } from 'typescript';
+//import fs from 'fs';
+//import ModeloReceta from '../models/ModeloReceta';
+//import { forEachChild } from 'typescript';
 import ModeloUsuario from '../models/ModeloUsuario';
 import { createHash } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
- 
-
+//import nodemailer from 'nodemailer';
+//import dotenv from 'dotenv';
+import { sendConfirmationEmail } from '../config/mailer';
+import crypto from 'crypto'
 
 export  class controllerUsuario{
 
@@ -35,18 +35,28 @@ export  class controllerUsuario{
     }
 
     static async signUp(body : any){
+        console.log("??????")
 
+
+
+        
         const usuarioAnt = await ModeloUsuario.findOne(
             {where : {nombre :body.nombre}}
         );
 
         if (!usuarioAnt){
+            const tokenConfirmacion = crypto.randomBytes(32).toString('hex').slice(0, 32)
+
+            body.tokenConfirmacion = tokenConfirmacion;
 
             const usuario =  await controllerUsuario.crearUsuario(body);
 
             const payload = {
                 "nombre" : usuario.nombre
             }
+
+            
+            sendConfirmationEmail(body.mail, tokenConfirmacion)
 
             return controllerUsuario.generarJWT(payload)
         }

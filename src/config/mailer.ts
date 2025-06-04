@@ -13,8 +13,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendConfirmationEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http://localhost:3000/verify/${token}`;
- 
+  const url = `http://localhost:3000/signUp/confirmar/:${token}`;
+  
+  console.log(to)
+
   await transporter.sendMail({
     from: `"Cookpi" <${process.env.EMAIL_USER}>`,
     to,
