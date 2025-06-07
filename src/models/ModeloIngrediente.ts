@@ -43,12 +43,12 @@ ModeloIngrediente.init(
   }
   );
 
-
+/*
 ModeloIngrediente.belongsToMany(ModeloReceta, {
   through: RecetaIngredienteModel,
   foreignKey: 'ingredienteId',
   otherKey: 'recetaId',
 });
-
+*/
 
   export default ModeloIngrediente;

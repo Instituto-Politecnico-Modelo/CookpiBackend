@@ -6,7 +6,7 @@ import { createHash } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken'
 //import nodemailer from 'nodemailer';
 //import dotenv from 'dotenv';
-import { sendConfirmationEmail } from '../config/mailer';
+import { sendConfirmationEmail, sendPasswordResetEmail } from '../config/mailer';
 import crypto from 'crypto'
 
 export  class controllerUsuario{
@@ -35,10 +35,6 @@ export  class controllerUsuario{
     }
 
     static async signUp(body : any){
-        console.log("??????")
-
-
-
         
         const usuarioAnt = await ModeloUsuario.findOne(
             {where : {nombre :body.nombre}}
@@ -110,7 +106,7 @@ export  class controllerUsuario{
     
     }
 
-    static async updeteUsuario(body : any){
+    static async updateUsuario(body : any){
         const libro = await ModeloUsuario.update(body, { where : {id : body.id}})
         return libro;
     }
@@ -120,5 +116,32 @@ export  class controllerUsuario{
         const libro = await ModeloUsuario.destroy({ where : {id : body.id}})
         return libro;
     }
+
+
+    static async recuperarContraseña(mail: string, token: string) {
+    
+        const usuario = await ModeloUsuario.findOne({ where: { mail } });
+
+        if (usuario) {
+            const tokenRecuperacion = usuario.tokenConfirmacion
+            sendPasswordResetEmail(mail, token);
+        } 
+
+    }
+
+    static async actuaiizarContraseña(token: string, password: string) {
+    
+    const usuario = await ModeloUsuario.findOne({ where: { tokenConfirmacion: token } });
+
+    if (usuario) {
+        const hashedPassword = controllerUsuario.hashSHA256(password);
+        await ModeloUsuario.update(
+            { password: hashedPassword},
+            { where: { tokenConfirmacion: token } }
+        );
+
+    }
+    }
+
 
 }

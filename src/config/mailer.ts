@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendConfirmationEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http://localhost:3000/signUp/confirmar/:${token}`;
+  const url = `http://localhost:3000/signUp/confirmar/${token}`;
   
   console.log(to)
 
@@ -29,19 +29,20 @@ export const sendConfirmationEmail = async (to: string, token: string): Promise<
   });
 };
  
+
 export const sendPasswordResetEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http:/localhost:4200/reset-password/${token}`;
- 
-  console.log("Enviando correo de restablecimiento de contraseña a:", to);
+  const url = `http://localhost:3000/recuperarPassword/${token}`;
+  
+  console.log(to)
+
   await transporter.sendMail({
-    from: `"Mi App" <${process.env.EMAIL_USER}>`,
+    from: `"Cookpi" <${process.env.EMAIL_USER}>`,
     to,
-    subject: 'Restablece tu contraseña',
+    subject: 'Recupera tu contraseña',
     html: `
       <h3>¿Olvidaste tu contraseña?</h3>
-      <p>Haz clic en el siguiente enlace para restablecerla:</p>
+      <p>Haz clic en el siguiente enlace para establecer una nueva contraseña:</p>
       <a href="${url}">${url}</a>
     `,
   });
-  console.log("Correo de restablecimiento de contraseña enviado a:", to);
-}
+};
