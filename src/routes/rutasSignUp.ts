@@ -11,12 +11,13 @@ import ModeloUsuario from '../models/ModeloUsuario';
 
     signUpRouter.post('/',async (req: Request, res: Response) => {
         
-
+        console.log(req.body)
+        
         res.send(await controllerUsuario.signUp(req.body))
     });
 
     signUpRouter.get('/confirmar/:token',async (req: Request, res: Response) => {
-
+        
         const token = req.params.token
 
         ModeloUsuario.update({confirmado : true}, {where : {tokenConfirmacion : token}})

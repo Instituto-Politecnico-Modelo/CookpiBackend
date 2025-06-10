@@ -31,7 +31,7 @@ export const sendConfirmationEmail = async (to: string, token: string): Promise<
  
 
 export const sendPasswordResetEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http://localhost:3000/recuperarPassword/${token}`;
+  const url = `http://localhost:4200/recuperarPassword/${token}`;
   
   console.log(to)
 

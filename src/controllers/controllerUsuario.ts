@@ -25,6 +25,20 @@ export  class controllerUsuario{
     }
 
 
+
+    static async enivarCorreoPassword(mail : string){
+        const usuario = await ModeloUsuario.findOne({ where: { mail: mail } });
+        
+        if (usuario){
+            
+            const token = usuario.tokenConfirmacion;
+            if (token != undefined){
+                controllerUsuario.recuperarContraseña(mail, token)
+            }
+        }
+    }
+
+
     static async crearUsuario(body : any){
         
         body.password = controllerUsuario.hashSHA256(body.password)
