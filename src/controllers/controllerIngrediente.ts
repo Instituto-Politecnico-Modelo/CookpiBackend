@@ -1,3 +1,4 @@
+import { Model } from 'sequelize';
 import ModeloIngrediente from '../models/ModeloIngrediente';
 
 export  class controllerIngrediente{
@@ -16,9 +17,16 @@ export  class controllerIngrediente{
     }
 
 
-    static async deleteIngrediente(body : any){
-        return await ModeloIngrediente.destroy({ where : {nombre : body.nombre}})
+    static async deleteIngrediente(id : string){
+        return await ModeloIngrediente.destroy({ where : {id : id}})
     
+    }
+
+
+    static async leerIngredientes(){
+        console .log("Leyendo ingredientes")
+        console.log(ModeloIngrediente.findAll)
+        return await ModeloIngrediente.findAll();    
     }
 
 

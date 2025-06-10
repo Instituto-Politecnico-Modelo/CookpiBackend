@@ -6,7 +6,7 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
     export let ingredienteRouter = express.Router()
 
     ingredienteRouter.post('/', async (req: Request, res: Response) => {
-        
+
         res.send(await controllerIngrediente.crearIngrediente(req.body))
     });
 
@@ -16,7 +16,12 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
         res.send(await controllerIngrediente.updateIngrediente(req.body))
     });
 
-    ingredienteRouter.delete('/', async (req: Request, res: Response) => {
+    ingredienteRouter.delete('/:id', async (req: Request, res: Response) => {
         
-        res.send(await controllerIngrediente.deleteIngrediente(req.body))
+        res.send(await controllerIngrediente.deleteIngrediente(req.params.id))
+    });
+
+    ingredienteRouter.get('/', async (req: Request, res: Response) => {
+        
+        res.send(await controllerIngrediente.leerIngredientes())
     });

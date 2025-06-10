@@ -16,8 +16,9 @@ const cors = require("cors");
 
 app.use(express.json());
 
-app.use("/logIn", loginRouter);
 app.use('/logIn', cors());
+app.use("/logIn", loginRouter);
+
 
 app.use("/signUp", cors())
 app.use("/signUp", signUpRouter)
