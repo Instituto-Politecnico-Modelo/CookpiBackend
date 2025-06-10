@@ -6,6 +6,8 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
     export let ingredienteRouter = express.Router()
 
     ingredienteRouter.post('/', async (req: Request, res: Response) => {
+        
+        console.log(req.body)
 
         res.send(await controllerIngrediente.crearIngrediente(req.body))
     });
@@ -21,7 +23,8 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
         res.send(await controllerIngrediente.deleteIngrediente(req.params.id))
     });
 
-    ingredienteRouter.get('/', async (req: Request, res: Response) => {
+
+    ingredienteRouter.get('/:pagina', async (req: Request, res: Response) => {
         
-        res.send(await controllerIngrediente.leerIngredientes())
+        res.send(await controllerIngrediente.leerIngredientes(+req.params.pagina))
     });

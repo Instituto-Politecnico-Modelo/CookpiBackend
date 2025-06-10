@@ -12,7 +12,7 @@ export  class controllerIngrediente{
     }
 
     static async updateIngrediente(body : any){
-        const ingrediente = await ModeloIngrediente.update(body, { where : {nombre : body.nombre}})
+        const ingrediente = await ModeloIngrediente.update(body, { where : {id : body.id}})
         return ingrediente;
     }
 
@@ -23,10 +23,10 @@ export  class controllerIngrediente{
     }
 
 
-    static async leerIngredientes(){
+    static async leerIngredientes(pagina : number){
         console .log("Leyendo ingredientes")
-        console.log(ModeloIngrediente.findAll)
-        return await ModeloIngrediente.findAll();    
+        console.log(ModeloIngrediente.findAll({limit : 10}))
+        return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5});    
     }
 
 
