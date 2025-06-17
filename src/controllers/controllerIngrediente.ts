@@ -1,5 +1,6 @@
-import { Model } from 'sequelize';
+import { Model, Op } from 'sequelize';
 import ModeloIngrediente from '../models/ModeloIngrediente';
+import { link } from 'fs';
 
 export  class controllerIngrediente{
 
@@ -23,11 +24,15 @@ export  class controllerIngrediente{
     }
 
 
-    static async leerIngredientes(pagina : number){
-        console .log("Leyendo ingredientes")
-        console.log(ModeloIngrediente.findAll({limit : 10}))
-        return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5});    
+    static async leerIngredientes(pagina : number, busqueda : string, buscar : boolean){
+        if (buscar){
+            return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+        }
+        else{    
+            console.log("ASDWWW") 
+            return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5});
+             
+        }
     }
-
 
 }
