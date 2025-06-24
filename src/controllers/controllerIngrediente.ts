@@ -1,5 +1,6 @@
-import { Model } from 'sequelize';
+import { Model, Op } from 'sequelize';
 import ModeloIngrediente from '../models/ModeloIngrediente';
+import { link } from 'fs';
 
 export  class controllerIngrediente{
 
@@ -12,7 +13,7 @@ export  class controllerIngrediente{
     }
 
     static async updateIngrediente(body : any){
-        const ingrediente = await ModeloIngrediente.update(body, { where : {nombre : body.nombre}})
+        const ingrediente = await ModeloIngrediente.update(body, { where : {id : body.id}})
         return ingrediente;
     }
 
@@ -23,11 +24,15 @@ export  class controllerIngrediente{
     }
 
 
-    static async leerIngredientes(){
-        console .log("Leyendo ingredientes")
-        console.log(ModeloIngrediente.findAll)
-        return await ModeloIngrediente.findAll();    
+    static async leerIngredientes(pagina : number, busqueda : string, buscar : boolean){
+        if (buscar){
+            return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+        }
+        else{    
+            console.log("ASDWWW") 
+            return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5});
+             
+        }
     }
-
 
 }

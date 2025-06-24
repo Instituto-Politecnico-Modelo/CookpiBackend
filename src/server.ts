@@ -5,6 +5,7 @@ import { loginRouter } from './routes/LogInRouter';
 import { signUpRouter } from './routes/rutasSignUp';
 import { recuperarContraseñaRouter } from './routes/rutasRecuperarContraseña';
 import { ingredienteRouter } from './routes/rutasIngrediente';
+import { checkLoginRouter } from './routes/CheckLogin';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,8 @@ app.use(express.json());
 app.use('/logIn', cors());
 app.use("/logIn", loginRouter);
 
+app.use('/checkLogIn', cors());
+app.use("/checkLogIn", checkLoginRouter);
 
 app.use("/signUp", cors())
 app.use("/signUp", signUpRouter)

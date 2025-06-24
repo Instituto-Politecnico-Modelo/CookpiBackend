@@ -64,7 +64,7 @@ export  class controllerUsuario{
             const payload = {
                 "nombre" : usuario.nombre
             }
-
+            
             
             sendConfirmationEmail(body.mail, tokenConfirmacion)
 
@@ -88,6 +88,7 @@ export  class controllerUsuario{
                     "nombre" : usuario.nombre
                 }
                 
+
                 return controllerUsuario.generarJWT(payload)
 
             }
