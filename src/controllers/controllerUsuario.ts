@@ -51,7 +51,7 @@ export  class controllerUsuario{
     static async signUp(body : any){
         
         const usuarioAnt = await ModeloUsuario.findOne(
-            {where : {nombre :body.nombre}}
+            {where : {mail :body.mail}}
         );
 
         if (!usuarioAnt){
@@ -71,7 +71,7 @@ export  class controllerUsuario{
             return controllerUsuario.generarJWT(payload)
         }
         else{
-            console.log(usuarioAnt)
+            return "Ya existe un usuario con ese correo electrónico";
         }
 
     }
@@ -92,6 +92,12 @@ export  class controllerUsuario{
                 return controllerUsuario.generarJWT(payload)
 
             }
+            else{
+                return("Contraseña incorrecta")
+            }
+        }
+        else if (true){
+            return "Ese usuario no existe"
         }
         return null
     }
