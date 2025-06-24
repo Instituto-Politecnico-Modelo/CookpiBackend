@@ -29,7 +29,6 @@ export  class controllerIngrediente{
             return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
         }
         else{    
-            console.log("ASDWWW") 
             return await ModeloIngrediente.findAll({limit : 5, offset : pagina * 5});
              
         }

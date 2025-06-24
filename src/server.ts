@@ -39,6 +39,7 @@ app.get('/', (req: Request, res: Response) => {
 
 (async () => {
   try {
+    console.log("pre db")
     await sequelize.sync();
     console.log('Base de datos sincronizada');
     app.listen(PORT, () => {
