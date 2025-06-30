@@ -30,6 +30,8 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
         res.send(await controllerIngrediente.leerIngredientes(+req.params.pagina, req.params.busqueda, true))
     });
 
-    ingredienteRouter.get('/:pagina', authenticateToken ,async (req: Request, res: Response) => {
+    ingredienteRouter.get('/:pagina' ,async (req: Request, res: Response) => {
+        
+        console.log("ES ESTE ROUTER");
         res.send(await controllerIngrediente.leerIngredientes(+req.params.pagina, "nada", false))
     });

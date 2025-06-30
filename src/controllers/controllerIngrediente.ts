@@ -10,6 +10,7 @@ export  class controllerIngrediente{
             body
         );
         return ingrediente;
+
     }
 
     static async updateIngrediente(body : any){
