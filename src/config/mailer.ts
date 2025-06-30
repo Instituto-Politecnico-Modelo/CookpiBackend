@@ -7,13 +7,13 @@ const transporter = nodemailer.createTransport({
  
   service: 'gmail',
   auth: {
-    user: "cookpioficial@gmail.com",
-    pass: "bjskqrupdubvaglj",
+    user: process.env.EMAIL_USER,
+    pass: process.env.PASSWORDMAIL,
   },
 });
 
 export const sendConfirmationEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http://localhost:3000/signUp/confirmar/${token}`;
+  const url = `${process.env.URL}/signUp/confirmar/${token}`;
   
   console.log(to)
 
@@ -31,7 +31,7 @@ export const sendConfirmationEmail = async (to: string, token: string): Promise<
  
 
 export const sendPasswordResetEmail = async (to: string, token: string): Promise<void> => {
-  const url = `http://localhost:4200/recuperarPassword/${token}`;
+  const url = `${process.env.URLFRONT}/recuperarPassword/${token}`;
   
   console.log(to)
 
