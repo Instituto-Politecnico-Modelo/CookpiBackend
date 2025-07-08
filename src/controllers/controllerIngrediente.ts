@@ -17,7 +17,7 @@ export  class controllerIngrediente{
     }
 
     static async updateIngrediente(body : any){
-
+        
         const ingrediente = await ModeloIngrediente.update(body, { where : {id : body.id}})
 
         return ingrediente;

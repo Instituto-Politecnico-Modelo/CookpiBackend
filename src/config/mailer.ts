@@ -31,7 +31,7 @@ export const sendConfirmationEmail = async (to: string, token: string): Promise<
     html: `
       <h3>¡Gracias por registrarte!</h3>
       <p>Haz clic en el siguiente enlace para confirmar tu cuenta:</p>
-      <a href="${url}">${url}</a>
+      <a href = "${url}">${url}</a>
     `,
 
   });

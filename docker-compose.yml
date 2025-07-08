@@ -3,7 +3,7 @@ version: '3.8'
 services:
  frontend:
     build:
-      context: ./TP1-Cacace-Sofi-Frontend
+      context: ../TP1-Cacace-Sofi-Frontend
     ports:
       - "80:80"
     networks:
@@ -14,13 +14,13 @@ services:
 
  backend:
     build:
-      context: ./TP1-Cacace-Sofi-Backend
+      context: ../TP1-Cacace-Sofi-Backend
     ports:
       - "3000:3000"
     networks:
       - app-network
     environment:
-      - MYSQLDATABASE= libros
+      - MYSQLDATABASE= cookpi
       - MYSQLUSER= alumno
       - MYSQLPASSWORD= alumnoipm
       - DBHOST= localhost
