@@ -1,17 +1,26 @@
 import { Model, Op } from 'sequelize';
 
 import ModeloIngrediente from '../models/ModeloIngrediente';
-
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { link } from 'fs';
+import { jwtDecode } from "jwt-decode";
 
 export  class controllerIngrediente{
 
-    static async crearIngrediente(body : any){
-        
+    static secretKey = "Ensaladardamal"
+
+    static async crearIngrediente(body : any, authHeader: string | undefined){
+        if (authHeader){    
+            const token = authHeader && authHeader.split(' ')[1];
+            console.log(token)
+            console.log(jwt.verify(token, this.secretKey))
+            console.log("TOKEN: " + jwtDecode(token));
+        }
+
         const ingrediente = await ModeloIngrediente.create(
             body
         );
-
+        
         return ingrediente;
 
     }

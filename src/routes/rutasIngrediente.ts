@@ -10,9 +10,9 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
 
     ingredienteRouter.post('/', async (req: Request, res: Response) => {
         
-        console.log(req.body)
-
-        res.send(await controllerIngrediente.crearIngrediente(req.body))
+        
+        
+        res.send(await controllerIngrediente.crearIngrediente(req.body, req.headers['authorization']))
     });
 
 

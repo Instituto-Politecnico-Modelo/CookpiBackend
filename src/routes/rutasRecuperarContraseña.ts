@@ -12,8 +12,9 @@ import { Sequelize, DataTypes } from 'sequelize';
 
     recuperarContraseñaRouter.post('/cambiar',async (req: Request, res: Response) => {
 
+        console.log(req.body)
         res.send(controllerUsuario.actuaiizarContraseña(req.body.token, req.body.password))
-
+        
     });
 
     recuperarContraseñaRouter.post('/',async (req: Request, res: Response) => {  

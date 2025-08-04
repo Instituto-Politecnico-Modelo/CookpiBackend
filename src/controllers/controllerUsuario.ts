@@ -3,7 +3,7 @@
 //import { forEachChild } from 'typescript';
 //import nodemailer from 'nodemailer';
 //import dotenv from 'dotenv';
-
+           
 import ModeloUsuario from '../models/ModeloUsuario';
 
 import { createHash } from 'crypto';
@@ -26,15 +26,12 @@ export  class controllerUsuario{
 
     }
 
-
     static generarJWT(payload: any): string {
 
         const token = jwt.sign(payload, controllerUsuario.secretKey);
         return token;
 
     }
-
-
 
     static async enivarCorreoPassword(mail : string){
 
@@ -49,19 +46,15 @@ export  class controllerUsuario{
                 controllerUsuario.recuperarContraseña(mail, token)
 
             }
-
         }
     }
-
 
     static async crearUsuario(body : any){
         
         body.password = controllerUsuario.hashSHA256(body.password)
 
         const usuario = await ModeloUsuario.create(
-
             body
-
         );
         return usuario;
     }
@@ -87,7 +80,7 @@ export  class controllerUsuario{
 
             const payload = {
 
-                "nombre" : usuario.nombre
+                "mail" : usuario.mail
 
             }
             
@@ -122,7 +115,7 @@ export  class controllerUsuario{
                 
                 const payload = {
 
-                    "nombre" : usuario.nombre      
+                    "mail" : usuario.mail      
 
                 }
                 
@@ -161,7 +154,7 @@ export  class controllerUsuario{
         }
 
         const usuario = await ModeloUsuario.findOne(
-            {where : {nombre : (payload as JwtPayload).nombre}}
+            {where : {mail : (payload as JwtPayload).mail}}
         )
         
         if (usuario){
@@ -201,14 +194,22 @@ export  class controllerUsuario{
     const usuario = await ModeloUsuario.findOne({ where: { tokenConfirmacion: token } });
 
     if (usuario) {
+
+        const payload = {
+
+            "mail" : usuario.mail
+    
+        }
+
         const hashedPassword = controllerUsuario.hashSHA256(password);
+        
         await ModeloUsuario.update(
-            { password: hashedPassword},
+            { password: hashedPassword, tokenConfirmacion: this.generarJWT(payload)},
             { where: { tokenConfirmacion: token } }
-        );
+        ); 
 
     }
-    }
+}
 
 
 }
