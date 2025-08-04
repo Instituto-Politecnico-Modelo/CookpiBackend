@@ -2,17 +2,16 @@ import { Sequelize } from 'sequelize';
 /*
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'database.sqlite', // o ruta relativa/absoluta al archivo
-  logging: false, // opcional: desactiva los logs de SQL
+  storage: 'database.sqlite',
+  logging: false, 
 });
-
 */
+
 const sequelize = new Sequelize({
   dialect: "mysql",
   database: "cookpi",
   username: "alumno",
   password: "alumnoipm",
-  host: "172.16.4.249",
+  host: "127.0.0.1",
 });
-
 export default sequelize;

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+ frontend:
+    build:
+      context: ../TP1-Cacace-Sofi-Frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    restart: always
+
+ backend:
+    build:
+      context: ../TP1-Cacace-Sofi-Backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - MYSQLDATABASE= cookpi
+      - MYSQLUSER= alumno
+      - MYSQLPASSWORD= alumnoipm
+      - DBHOST= localhost
+      - DBPORT= 3306
+    restart: always   
+    
+ mysql:
+    image: mysql:8
+    restart: always
+
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
+
