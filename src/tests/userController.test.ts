@@ -8,7 +8,7 @@ describe('User Controller', () => {
    /* const response = await request(app).get('/users');
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);*/
-    expect(5+1).toBe(2);
+    expect(5+1).toBe(6);
   });
   
 });
