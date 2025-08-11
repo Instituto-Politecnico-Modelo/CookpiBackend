@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
  
 env:
-  IMAGE_NAME: CookpiBackend
+  IMAGE_NAME: cookpibackend
   IMAGE_OWNER: ${{ github.repository_owner }}
  
 jobs:
@@ -21,6 +21,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+ 
 
 
       - name: Login to GitHub Container Registry
