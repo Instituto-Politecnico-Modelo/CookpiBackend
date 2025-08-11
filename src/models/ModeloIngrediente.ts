@@ -2,6 +2,7 @@ import { BelongsToMany, DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import RecetaIngredienteModel from './RecetaIngredienteModel';
 import ModeloReceta from './ModeloReceta';
+import ModeloUsuario from './ModeloUsuario';
 
 class ModeloIngrediente extends Model {
 
@@ -10,7 +11,7 @@ class ModeloIngrediente extends Model {
     public carbohidratos!: number;
     public grasas!: number;
     public proteinas!: number;
-
+    public usuarioId!: number | null; 
 }   
 
 ModeloIngrediente.init(
@@ -35,6 +36,15 @@ ModeloIngrediente.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    usuarioId: {
+      type: DataTypes.INTEGER,
+      allowNull: true, 
+
+      references: {
+        model: 'usuario', 
+        key: 'id',
+      },
+    },
   },
   {
     sequelize,
@@ -42,7 +52,11 @@ ModeloIngrediente.init(
 
   }
   );
-
+  
+  ModeloIngrediente.belongsTo(ModeloUsuario, {
+    foreignKey: 'usuarioId',
+    as: 'usuario', 
+  });
 /*
 ModeloIngrediente.belongsToMany(ModeloReceta, {
   through: RecetaIngredienteModel,
