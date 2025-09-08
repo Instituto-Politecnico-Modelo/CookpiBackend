@@ -4,6 +4,7 @@ import ModeloIngrediente from '../models/ModeloIngrediente';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { link } from 'fs';
 import { jwtDecode } from "jwt-decode";
+import { any } from '@tensorflow/tfjs';
 
 export  class controllerIngrediente{
 
@@ -54,5 +55,91 @@ export  class controllerIngrediente{
              
         }
     }
+
+
+
+
+
+
+
+    static async obtenerAlimentosPopulares(): Promise<{ nombre: string, codigo: string }[]> {
+    const url = 'https://ar.openfoodfacts.org/products.json?sort_by=popularity';
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error en la respuesta: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const productos = data.products;
+
+        const lista = productos
+            .filter((p: any) => p.product_name && p.code) // asegurarse de que tengan nombre y código
+            .map((p: any) => ({
+                nombre: p.product_name,
+                codigo: p.code
+            }));
+
+
+lista.forEach((producto: {nombre:string, codigo: string}) => {
+    ModeloIngrediente.create({
+        nombre: producto.nombre,
+        codigo: producto.codigo
+    });
+});
+
+
+
+            console.log(lista);
+
+        return lista;
+    } catch (error) {
+        console.error('Error al obtener alimentos populares:', error);
+        throw new Error('No se pudieron obtener los alimentos populares');
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static async obtenerCaloriasPorBarcode(barcode: string): Promise<number | null> {
+  const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error al consultar el producto: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.product || !data.product.nutriments || data.status === 0) {
+      console.warn('Producto no encontrado o sin datos nutricionales.');
+      return null;
+    }
+
+    const calorias = data.product.nutriments['energy-kcal'] ?? null;
+
+    return calorias;
+  } catch (error) {
+    console.error(`Error al obtener calorías del producto ${barcode}:`, error);
+    return null;
+  }
+}
+
+
 
 }
