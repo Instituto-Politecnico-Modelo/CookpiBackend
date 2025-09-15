@@ -12,7 +12,7 @@ class ModeloUsuario extends Model {
 
     public confirmado?: boolean;
 
-    public mail?: string;
+    public mail!: string;
 
     public descripcion?: string;
 
@@ -23,15 +23,6 @@ class ModeloUsuario extends Model {
 
 ModeloUsuario.init(
   {
-    id: {
-
-      type: DataTypes.INTEGER,
-
-      autoIncrement: true,
-
-      primaryKey: true
-
-    },
     nombre: {
 
       type: DataTypes.STRING,
@@ -49,7 +40,7 @@ ModeloUsuario.init(
     mail: {
 
       type: DataTypes.STRING,
-
+      primaryKey: true,
       allowNull: true,
 
       unique: true

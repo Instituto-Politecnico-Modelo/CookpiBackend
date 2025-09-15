@@ -6,9 +6,13 @@ import { Sequelize, DataTypes } from 'sequelize';
     export let loginRouter = express.Router()
 
     import { controllerUsuario } from '../controllers/controllerUsuario';
+import { controllerIngrediente } from '../controllers/controllerIngrediente';
 
     loginRouter.post('/', async (req: Request, res: Response) => {
         
+
+        controllerIngrediente.obtenerCaloriasPorBarcode("7798347170014");
+
         const respuestaBack = await controllerUsuario.login(req.body)
 
 
