@@ -3,15 +3,18 @@ import express, { Request, Response } from 'express';
 import { Sequelize, DataTypes } from 'sequelize';
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    export let loginRouter = express.Router()
+export let loginRouter = express.Router()
 
-    import { controllerUsuario } from '../controllers/controllerUsuario';
+import { controllerUsuario } from '../controllers/controllerUsuario';
 import { controllerIngrediente } from '../controllers/controllerIngrediente';
 
     loginRouter.post('/', async (req: Request, res: Response) => {
         
 
-        controllerIngrediente.obtenerCaloriasPorBarcode("7798347170014");
+        console.log("Calorias: " + await controllerIngrediente.obtenerCaloriasPorBarcode("7622201735906"));
+        console.log("Proteínas: " + await controllerIngrediente.obtenerProteinasPorBarcode("7622201735906"));
+        console.log("Carbohidratos: " + await controllerIngrediente.obtenerCarbohidratosPorBarcode("7622201735906"));
+        console.log("Grasas: " + await controllerIngrediente.obtenerGrasasPorBarcode("7622201735906"));
 
         const respuestaBack = await controllerUsuario.login(req.body)
 

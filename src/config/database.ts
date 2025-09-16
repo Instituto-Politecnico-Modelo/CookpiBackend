@@ -10,8 +10,8 @@ const sequelize = new Sequelize({
 const sequelize = new Sequelize({
   dialect: "mysql",
   database: "cookpi",
-  username: "alumno",
-  password: "alumnoipm",
+  username: "alumno25.cacace.nicolas",
+  password: "JT5+g+V39/IyRNkMzaPAeg==",
   host: "127.0.0.1",
 });
 

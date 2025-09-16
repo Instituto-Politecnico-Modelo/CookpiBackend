@@ -12,6 +12,8 @@ import { ingredienteRouter } from './routes/rutasIngrediente';
 
 import { checkLoginRouter } from './routes/CheckLogin';
 
+import { RecetaRouter } from './routes/recetaRouter';
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -36,6 +38,10 @@ app.use("/recuperarPassword", recuperarContraseñaRouter)
 
 app.use("/ingrediente", cors())
 app.use("/ingrediente", ingredienteRouter)
+
+app.use("/receta", cors())
+app.use("/receta", RecetaRouter)
+
 
 
 app.get('/', (req: Request, res: Response) => {
