@@ -10,8 +10,6 @@ export class controllerReceta{
 
     static async crearReceta(body : any, authHeader: string | undefined){
         
-
-        
         if (authHeader){    
             const token = authHeader && authHeader.split(' ')[1];
             console.log(token)
@@ -19,6 +17,25 @@ export class controllerReceta{
             console.log("TOKEN: " + jwtDecode(token));
         }
         console.log("###############");
+        
+        body["calorias"] = 0
+        body["proteinas"] = 0
+        body["grasas"] = 0
+        body["carbohidratos"] = 0
+
+        for (const ingrediente of body.ingredientes) {
+        const calorias = await controllerIngrediente.obtenerCaloriasPorBarcode(ingrediente.codigo) ?? 0;
+        const proteinas = await controllerIngrediente.obtenerProteinasPorBarcode(ingrediente.codigo) ?? 0;
+        const grasas = await controllerIngrediente.obtenerGrasasPorBarcode(ingrediente.codigo) ?? 0;
+        const carbohidratos = await controllerIngrediente.obtenerCarbohidratosPorBarcode(ingrediente.codigo) ?? 0;
+
+        body.calorias += calorias * ingrediente.cantidad / 100;
+        body.proteinas += proteinas * ingrediente.cantidad / 100;
+        body.grasas += grasas * ingrediente.cantidad / 100;
+        body.carbohidratos  += carbohidratos * ingrediente.cantidad / 100;
+    }
+    
+    console.log(body)
         const receta = await ModeloReceta.create(
             body
         );

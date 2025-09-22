@@ -23,11 +23,13 @@ class ModeloReceta extends Model {
 
     //public tiempo!: number;
 
-    //public carbohidratos!: number;
+    public calorias!: number;
+    
+    public carbohidratos!: number;
 
-    //public proteinas!: number;
+    public proteinas!: number;
 
-    //public grasas!: number;
+    public grasas!: number;
 
     //public momentoDelDia!: MomentoDelDia;
 
@@ -52,6 +54,23 @@ ModeloReceta.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    calorias: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    proteinas: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    carbohidratos: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    grasas: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+
   },
   {
     sequelize,

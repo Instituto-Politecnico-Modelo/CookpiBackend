@@ -5,7 +5,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { link } from 'fs';
 import { jwtDecode } from "jwt-decode";
 
-
 export  class controllerIngrediente{
 
     static secretKey = "Ensaladardamal"
@@ -33,13 +32,11 @@ export  class controllerIngrediente{
         return ingrediente;
     }
 
-
     static async deleteIngrediente(id : string){
 
         return await ModeloIngrediente.destroy({ where : {id : id}})
     
     }
-
 
     static async leerIngredientes(pagina : number, busqueda : string, buscar : boolean){
 
@@ -57,12 +54,6 @@ export  class controllerIngrediente{
              
         }
     }
-
-
-
-
-
-
 
     static async obtenerAlimentosPopulares(): Promise<{ nombre: string, codigo: string }[]> {
     const url = 'https://ar.openfoodfacts.org/products.json?sort_by=popularity';
@@ -92,9 +83,7 @@ lista.forEach((producto: {nombre:string, codigo: string}) => {
     });
 });
 
-
-
-            console.log(lista);
+  console.log(lista);
 
         return lista;
     } catch (error) {
@@ -147,6 +136,8 @@ static async obtenerCarbohidratosPorBarcode(barcode: string): Promise<number | n
   try {
     const response = await fetch(url);
 
+    console.log("B A R C O D E ::::::: " + barcode)
+
     if (!response.ok) {
       throw new Error(`Error al consultar el producto: ${response.status}`);
     }
@@ -171,8 +162,10 @@ static async obtenerCarbohidratosPorBarcode(barcode: string): Promise<number | n
 
 static async obtenerProteinasPorBarcode(barcode: string): Promise<number | null> {
   const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
-
+  console.log("B A R C O D E ::::::: " + barcode)
   try {
+
+    console.log("B A R C O D E ::::::: " + barcode)
     const response = await fetch(url);
 
     if (!response.ok) {
