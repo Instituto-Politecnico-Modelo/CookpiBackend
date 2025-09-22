@@ -28,7 +28,6 @@ ModeloIngrediente.init(
     sequelize,
     modelName: 'Ingrediente',
 
-
   }
   );
   

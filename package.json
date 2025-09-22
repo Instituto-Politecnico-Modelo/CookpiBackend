@@ -26,7 +26,7 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@sequelize/sqlite3": "^7.0.0-alpha.46",
@@ -40,5 +40,13 @@
     "nodemailer": "^7.0.3",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Instituto-Politecnico-Modelo/CookpiBackend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Instituto-Politecnico-Modelo/CookpiBackend/issues"
+  },
+  "homepage": "https://github.com/Instituto-Politecnico-Modelo/CookpiBackend#readme"
 }

@@ -23,7 +23,7 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
     });
 
     ingredienteRouter.delete('/:id', async (req: Request, res: Response) => {
-        
+
         res.send(await controllerIngrediente.deleteIngrediente(req.params.id))
 
     });
@@ -38,5 +38,11 @@ import {controllerIngrediente} from '../controllers/controllerIngrediente';
     ingredienteRouter.get('/:pagina' ,async (req: Request, res: Response) => {
 
         res.send(await controllerIngrediente.leerIngredientes(+req.params.pagina, "nada", false))
+        
+    });
+
+    ingredienteRouter.get('/' ,async (req: Request, res: Response) => {
+
+        res.send(await controllerIngrediente.leerIngredientes(-1, "nada", false))
         
     });
