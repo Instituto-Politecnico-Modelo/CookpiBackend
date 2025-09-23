@@ -1,7 +1,7 @@
 import { BelongsToMany, DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import RecetaIngredienteModel from './RecetaIngredienteModel';
-import ModeloReceta from './ModeloReceta';
+//import ModeloReceta from './ModeloReceta';
 import ModeloUsuario from './ModeloUsuario';
 
 class ModeloIngrediente extends Model {
@@ -29,15 +29,8 @@ ModeloIngrediente.init(
     modelName: 'Ingrediente',
 
   }
-  );
+);
   
 
-/*
-ModeloIngrediente.belongsToMany(ModeloReceta, {
-  through: RecetaIngredienteModel,
-  foreignKey: 'ingredienteId',
-  otherKey: 'recetaId',
-});
-*/
 
-  export default ModeloIngrediente;
+export default ModeloIngrediente;

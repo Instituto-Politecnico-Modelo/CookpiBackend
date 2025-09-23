@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import ModeloReceta from '../models/ModeloReceta';
 import ModeloIngrediente from '../models/ModeloIngrediente';
 import { controllerIngrediente } from './controllerIngrediente';
+import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
 
 export class controllerReceta{
 
@@ -39,7 +40,20 @@ export class controllerReceta{
         const receta = await ModeloReceta.create(
             body
         );
+
+
+        let tablaIntermedia = {"recetaId" : receta.id, ingredienteId:"", cantidad:0}
         
+
+
+        for (const ingrediente of body.ingredientes) {
+
+            tablaIntermedia.ingredienteId = ingrediente.codigo;
+            tablaIntermedia.cantidad = ingrediente.cantidad;
+            RecetaIngredienteModel.create(tablaIntermedia);
+
+        }
+
         return receta;
 
     }

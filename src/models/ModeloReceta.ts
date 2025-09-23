@@ -2,14 +2,15 @@
 
 import { BelongsToMany, DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
-
+import ModeloLibro from './ModeloLibroReceta';
 import ModeloIngrediente from './ModeloIngrediente';
 import ModeloCategoria from './Dieta';
-import MomentoDelDia from './MomentoDelDia';
 import Dieta from './Dieta';
 import RecetaIngredienteModel from './RecetaIngredienteModel';
 
 class ModeloReceta extends Model {
+
+    public id!: number;
 
     public nombre!: string;
 
@@ -31,7 +32,7 @@ class ModeloReceta extends Model {
 
     public grasas!: number;
 
-    //public momentoDelDia!: MomentoDelDia;
+    public momentoDelDia!: string;
 
     //public dieta!: Dieta;
 
@@ -40,11 +41,14 @@ class ModeloReceta extends Model {
 
 ModeloReceta.init(
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     nombre: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
-
     },
     descripcion: {
       type: DataTypes.STRING,
@@ -70,19 +74,19 @@ ModeloReceta.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    momentoDelDia: {
+      type: DataTypes.STRING,
+      allowNull: true,  
+    }
 
   },
   {
     sequelize,
     modelName: 'Receta',
-
   }
 );
 
 
-
-
-/*
 ModeloReceta.belongsToMany(ModeloIngrediente, {
 
     through: RecetaIngredienteModel,
@@ -92,5 +96,11 @@ ModeloReceta.belongsToMany(ModeloIngrediente, {
     otherKey: 'ingredienteId',
 
 });
-*/
+
+ModeloIngrediente.belongsToMany(ModeloReceta, {
+  through: RecetaIngredienteModel,
+  foreignKey: 'ingredienteId',
+  otherKey: 'recetaId',
+});
+
 export default ModeloReceta;

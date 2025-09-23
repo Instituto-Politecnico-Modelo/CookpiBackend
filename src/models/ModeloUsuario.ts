@@ -41,8 +41,7 @@ ModeloUsuario.init(
 
       type: DataTypes.STRING,
       primaryKey: true,
-      allowNull: true,
-
+      allowNull: false,
       unique: true
 
     },
