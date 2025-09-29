@@ -1,14 +1,19 @@
 import express, { Request, Response } from 'express';
 import { authenticateToken } from '../middleware/middleware';
 import { controllerReceta } from '../controllers/controllerReceta';
+import { controllerLibro } from '../controllers/controllerLibroReceta';
+import ModeloLibro from '../models/ModeloLibroReceta';
 
 export let LibroRouter = express.Router()
 
 LibroRouter.post('/' ,async (req: Request, res: Response) => {
     
     console.log(req.body);
-    controllerReceta.crearReceta(req.body, req.headers['authorization']);
+    controllerLibro.crearLibro(req.body, req.headers['authorization']);
+});
 
+LibroRouter.get('/' ,async (req: Request, res: Response) => {
     
-    
+    ModeloLibro.findAll({where:{mail : req.body.mail}})
+
 });

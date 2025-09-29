@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(cors());
 app.use('/logIn', cors());
 app.use("/logIn", loginRouter);
-/*🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿*/
 
+/*🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿🪿*/
 
 app.use('/checkLogIn', cors());
 app.use("/checkLogIn", checkLoginRouter);

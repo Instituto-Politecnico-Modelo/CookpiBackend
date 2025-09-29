@@ -57,4 +57,16 @@ export class controllerReceta{
         return receta;
 
     }
+
+
+    static async obtenerReceta(idR : string){
+
+        const receta = await ModeloReceta.findOne({where: {id : parseInt(idR)}})
+        console.log("YA LO SE   "+ receta?.procedimiento);
+
+        return receta;
+        
+    }
+
+
 }

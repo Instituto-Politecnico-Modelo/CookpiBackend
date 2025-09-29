@@ -10,3 +10,15 @@ RecetaRouter.post('/' ,async (req: Request, res: Response) => {
     controllerReceta.crearReceta(req.body, req.headers['authorization']);
     
 });
+
+
+RecetaRouter.get('/:id', async (req: Request, res: Response) => {
+
+    const respuestaBack = await controllerReceta.obtenerReceta(req.params.id);
+    if (respuestaBack != null){
+        res.send(respuestaBack)
+    }
+    else{
+        res.status(405).send("Receta no encontrada")
+    }
+});

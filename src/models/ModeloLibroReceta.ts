@@ -28,8 +28,8 @@ ModeloLibro.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    usuarioId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    mail: {
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'usuario',
@@ -44,24 +44,12 @@ ModeloLibro.init(
   }
 );
 
+
 ModeloLibro.belongsTo(ModeloUsuario, {
-  foreignKey: 'usuarioId',
-  as: 'usuario',
+  foreignKey: 'mail',
+  targetKey: 'mail',
+  as: 'usuario', 
 });
-
-ModeloLibro.belongsToMany(ModeloReceta, {
-  through: 'LibroReceta',
-  foreignKey: 'libroId',
-  otherKey: 'recetaId',
-  as: 'recetas',
-});
-ModeloReceta.belongsToMany(ModeloLibro, {
-  through: 'LibroReceta',
-  foreignKey: 'recetaId',
-  otherKey: 'libroId',
-  as: 'libros',
-});
-
 
 
 export default ModeloLibro;

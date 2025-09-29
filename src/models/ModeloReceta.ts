@@ -103,4 +103,7 @@ ModeloIngrediente.belongsToMany(ModeloReceta, {
   otherKey: 'recetaId',
 });
 
+
+
+
 export default ModeloReceta;

@@ -21,15 +21,13 @@ export class controllerLibro{
         
 
         const payload = jwt.verify(body.token, this.secretKey)
-
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA::::::::::: " + (payload as JwtPayload).mail)
         const mail = (payload as JwtPayload).mail
         
-        body["usuarioId"] = mail;
+        body["mail"] = mail;
 
         const Libro = ModeloLibroReceta.create(body)
 
         return Libro;
     }
 }
-
-
