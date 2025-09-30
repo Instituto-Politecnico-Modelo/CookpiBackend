@@ -12,8 +12,9 @@ LibroRouter.post('/' ,async (req: Request, res: Response) => {
     controllerLibro.crearLibro(req.body, req.headers['authorization']);
 });
 
-LibroRouter.get('/' ,async (req: Request, res: Response) => {
-    
-    ModeloLibro.findAll({where:{mail : req.body.mail}})
+LibroRouter.get('/:mail' ,async (req: Request, res: Response) => {
 
+    res.send(await ModeloLibro.findAll({where:{mail : req.params.mail}}))
+    
+    
 });

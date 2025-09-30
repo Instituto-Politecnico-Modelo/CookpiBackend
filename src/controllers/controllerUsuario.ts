@@ -4,6 +4,7 @@
 //import nodemailer from 'nodemailer';
 //import dotenv from 'dotenv';
            
+import { jwtDecode } from "jwt-decode";
 import ModeloUsuario from '../models/ModeloUsuario';
 
 import { createHash } from 'crypto';
@@ -210,6 +211,23 @@ export  class controllerUsuario{
 
     }
 }
+
+
+    static async mailPorToken(authHeader : string | undefined){
+
+        let token : string = ""
+
+
+        if (authHeader){    
+            token = authHeader && authHeader.split(' ')[1];
+            console.log(token)
+            console.log(jwt.verify(token, this.secretKey))
+            console.log("TOKEN: " + jwtDecode(token));
+        }
+        const payload = jwt.verify(token, this.secretKey)
+        const mail = (payload as JwtPayload).mail
+        return mail;
+    }
 
 
 }
