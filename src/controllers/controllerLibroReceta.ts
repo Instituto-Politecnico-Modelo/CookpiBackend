@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { jwtDecode } from "jwt-decode";
 import ModeloReceta from '../models/ModeloReceta';
 import ModeloLibroReceta from '../models/ModeloLibroReceta';
+import LibroRecetaModel from '../models/LibroReceta';
 
 export class controllerLibro{
 
@@ -18,10 +19,8 @@ export class controllerLibro{
             console.log(jwt.verify(token, this.secretKey))
             console.log("TOKEN: " + jwtDecode(token));
         }
-        
 
         const payload = jwt.verify(body.token, this.secretKey)
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA::::::::::: " + (payload as JwtPayload).mail)
         const mail = (payload as JwtPayload).mail
         
         body["mail"] = mail;
@@ -29,5 +28,14 @@ export class controllerLibro{
         const Libro = ModeloLibroReceta.create(body)
 
         return Libro;
+    }
+
+    static async agregarReceta(body : any){
+
+        const vinculoAnterior = await LibroRecetaModel.findOne({where: {libroId : body.libroId, recetaId : body.recetaId}})
+        console.log(vinculoAnterior)
+        if(vinculoAnterior == null  ){
+            LibroRecetaModel.create(body);
+        }
     }
 }

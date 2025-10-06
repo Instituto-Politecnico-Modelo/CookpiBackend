@@ -11,6 +11,17 @@ RecetaRouter.post('/' ,async (req: Request, res: Response) => {
     
 });
 
+RecetaRouter.get('/recetasPorLibro/:id', async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerRecetasPorLibro(req.params.id);
+    if (respuestaBack != null){
+        res.send(respuestaBack)
+    }
+    else{
+        res.send("")
+    }
+});
+
 
 RecetaRouter.get('/:id', async (req: Request, res: Response) => {
     

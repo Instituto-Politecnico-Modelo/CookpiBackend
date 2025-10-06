@@ -16,7 +16,7 @@ class ModeloLibro extends Model {
 ModeloLibro.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },

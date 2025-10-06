@@ -40,8 +40,6 @@ app.use("/receta", RecetaRouter)
 app.use("/libro", cors())
 app.use("/libro", LibroRouter)
 
-
-
 app.get('/', (req: Request, res: Response) => {
 
   res.send('Hello, TypeScript Express!');

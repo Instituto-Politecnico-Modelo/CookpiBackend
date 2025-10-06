@@ -19,7 +19,7 @@ LibroRecetaModel.init(
   }
     },
     recetaId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {
@@ -35,8 +35,5 @@ LibroRecetaModel.init(
     timestamps: false,
   }
 );
-
-
-
 
 export default LibroRecetaModel;

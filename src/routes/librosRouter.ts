@@ -10,11 +10,20 @@ LibroRouter.post('/' ,async (req: Request, res: Response) => {
     
     console.log(req.body);
     controllerLibro.crearLibro(req.body, req.headers['authorization']);
+
 });
 
 LibroRouter.get('/:mail' ,async (req: Request, res: Response) => {
+    
+    res.send(await ModeloLibro.findAll({where:{mail : req.params.mail + "@gmail.com"}}))
+    
+});
 
-    res.send(await ModeloLibro.findAll({where:{mail : req.params.mail}}))
+
+LibroRouter.post('/agregarReceta' ,async (req: Request, res: Response) => {
     
-    
+    console.log(req.body);
+
+    controllerLibro.agregarReceta(req.body);
+
 });

@@ -4,6 +4,7 @@ import ModeloReceta from '../models/ModeloReceta';
 import ModeloIngrediente from '../models/ModeloIngrediente';
 import { controllerIngrediente } from './controllerIngrediente';
 import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
+import LibroRecetaModel from '../models/LibroReceta';
 
 export class controllerReceta{
 
@@ -55,6 +56,12 @@ export class controllerReceta{
         }
 
         return receta;
+
+    }
+
+    static async obtenerRecetasPorLibro(idL : string){
+
+    return await LibroRecetaModel.findAll({where : {idLibro : idL}})
 
     }
 

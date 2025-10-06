@@ -11,7 +11,7 @@ RecetaIngredienteModel.init(
       references: {
       model: 'Receta',
       key: 'id',       
-  }
+      }
     },
     ingredienteId: {
       type: DataTypes.INTEGER,

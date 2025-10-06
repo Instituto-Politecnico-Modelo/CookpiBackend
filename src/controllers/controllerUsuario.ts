@@ -225,7 +225,8 @@ export  class controllerUsuario{
             console.log("TOKEN: " + jwtDecode(token));
         }
         const payload = jwt.verify(token, this.secretKey)
-        const mail = (payload as JwtPayload).mail
+        const mailPre = (payload as JwtPayload).mail
+        const mail = mailPre.split("@")[0];
         return mail;
     }
 
