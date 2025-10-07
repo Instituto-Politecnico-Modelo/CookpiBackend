@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import ModeloReceta from '../models/ModeloReceta';
 import ModeloLibroReceta from '../models/ModeloLibroReceta';
 import LibroRecetaModel from '../models/LibroReceta';
+import { where } from 'sequelize';
 
 export class controllerLibro{
 
@@ -38,4 +39,30 @@ export class controllerLibro{
             LibroRecetaModel.create(body);
         }
     }
+
+    static async recetasDeLibro(idLibro : string){
+    
+    let recetas : number[] = [];
+    let recetasData : {nombre : string, descripcion : string}
+
+
+    const respReceta = await LibroRecetaModel.findAll({where : {libroId : idLibro}})
+    
+    for (let i = 0; i < respReceta.length; i++) {
+        recetas.push(respReceta[i].recetaId)
+    }
+
+    for (let i = 0; i < recetas.length; i++) {
+        
+        let infoReceta = await ModeloReceta.findOne({where : {}})
+
+        recetasData.push();
+    
+    }
+
+
+
+    }
+
+
 }
