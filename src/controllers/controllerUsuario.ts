@@ -13,6 +13,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { sendConfirmationEmail, sendPasswordResetEmail } from '../config/mailer';
 
+import UsuarioRecetaModel from "../models/ModeloUsuarioReceta";
 import crypto from 'crypto';
 import { error } from 'console';
 
@@ -75,6 +76,8 @@ export  class controllerUsuario{
 
             const tokenConfirmacion = crypto.randomBytes(32).toString('hex').slice(0, 32)
 
+            body.reqCalorico = (body.peso * 10) + (6.25 * body.altura) - 5 * body.edad - 161;
+    
             body.tokenConfirmacion = tokenConfirmacion;
 
             const usuario =  await controllerUsuario.crearUsuario(body);
@@ -230,5 +233,12 @@ export  class controllerUsuario{
         return mail;
     }
 
+
+    static async cargarConsumo(body : any){
+        console.log("N H E")
+        UsuarioRecetaModel.create({idReceta : body.idReceta, mail : body.mail})
+        console.log("N A S H E")
+
+    }
 
 }

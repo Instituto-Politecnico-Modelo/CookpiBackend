@@ -7,6 +7,7 @@ import { ingredienteRouter } from './routes/rutasIngrediente';
 import { checkLoginRouter } from './routes/CheckLogin';
 import { RecetaRouter } from './routes/recetaRouter';
 import { LibroRouter } from './routes/librosRouter';
+import { consumoRouter } from './routes/ConsumoRouter';
 
 const app = express();
 
@@ -17,6 +18,7 @@ const cors = require("cors");
 
 app.use(express.json());
 app.use(cors());
+
 app.use('/logIn', cors());
 app.use("/logIn", loginRouter);
 
@@ -39,6 +41,9 @@ app.use("/receta", RecetaRouter)
 
 app.use("/libro", cors())
 app.use("/libro", LibroRouter)
+
+app.use("/consumo", cors())
+app.use("/consumo", consumoRouter)
 
 app.get('/', (req: Request, res: Response) => {
 

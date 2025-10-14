@@ -43,7 +43,7 @@ export class controllerLibro{
     static async recetasDeLibro(idLibro : string){
     
     let recetas : number[] = [];
-    let recetasData : {nombre : string, descripcion : string}
+    let recetasData : {nombre : string, descripcion : string}[] = [];
 
 
     const respReceta = await LibroRecetaModel.findAll({where : {libroId : idLibro}})
@@ -54,11 +54,18 @@ export class controllerLibro{
 
     for (let i = 0; i < recetas.length; i++) {
         
-        let infoReceta = await ModeloReceta.findOne({where : {}})
-
-        recetasData.push();
+        let infoReceta = await ModeloReceta.findOne({where : {id : recetas[i]}})
+        
+        if (infoReceta != null){
+            recetasData[i] = {nombre: infoReceta.nombre, descripcion : infoReceta.descripcion};
+        }
     
     }
+
+    console.log("__________________________________")
+    console.log(recetasData[0].nombre);
+    console.log("__________________________________")
+    return recetasData;
 
 
 

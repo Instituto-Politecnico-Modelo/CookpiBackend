@@ -23,7 +23,7 @@ LibroRouter.get('/porid/:id' ,async (req: Request, res: Response) => {
 
 LibroRouter.get('/recetas/:id' ,async (req: Request, res: Response) => {
 
-    res.send(controllerLibro.recetasDeLibro(req.params.id))
+    res.send(await controllerLibro.recetasDeLibro(req.params.id))
    
 });
 

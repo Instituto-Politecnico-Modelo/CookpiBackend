@@ -9,7 +9,7 @@ import Dieta from './Dieta';
 import RecetaIngredienteModel from './RecetaIngredienteModel';
 
 class ModeloReceta extends Model {
-
+  
     public id!: number;
 
     public nombre!: string;

@@ -2,21 +2,21 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class LibroRecetaModel extends Model {
-  public libroId!: number;
+class UsuarioRecetaModel extends Model {
+  public mail!: string;
   public recetaId!: number;
 }
 
-LibroRecetaModel.init(
+UsuarioRecetaModel.init(
   {
-    libroId: {
-      type: DataTypes.INTEGER,
+    mail: {
+      type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
       references: {
-      model: 'Libros',
-      key: 'id',       
-  }
+      model: 'Usuario',
+      key: 'mail',       
+      }
     },
     recetaId: {
       type: DataTypes.INTEGER,
@@ -30,10 +30,10 @@ LibroRecetaModel.init(
   },
   {
     sequelize,
-    tableName: 'LibroReceta',
-    modelName: 'LibroReceta',
+    tableName: 'usuarioReceta',
+    modelName: 'usuarioReceta',
     timestamps: false,
   }
 );
 
-export default LibroRecetaModel;
+export default UsuarioRecetaModel;
