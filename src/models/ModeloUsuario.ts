@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import ModeloReceta from './ModeloReceta';
+import UsuarioRecetaModel from './ModeloUsuarioReceta';
 
 class ModeloUsuario extends Model {
 
@@ -18,68 +19,91 @@ class ModeloUsuario extends Model {
 
     public tokenConfirmacion?:string;
 
-}
+    public peso!: number;
 
+    public altura!: number;
+
+    public reqCalorico! : number;
+
+    public edad! : number;
+
+    public genero!: number;
+}
 
 ModeloUsuario.init(
   {
     nombre: {
-
       type: DataTypes.STRING,
-
-      allowNull: false
-
+      allowNull: false,
     },
     password: {
-
       type: DataTypes.STRING,
-      
-      allowNull: false
-
+      allowNull: false,
     },
     mail: {
-
       type: DataTypes.STRING,
       primaryKey: true,
-      allowNull: true,
-
-      unique: true
-
+      allowNull: false,
+      unique: true,
     },
     descripcion: {
-
       type: DataTypes.TEXT,
-
-      allowNull: true
-
+      allowNull: true,
     },
     confirmado: {
-
       type: DataTypes.BOOLEAN,
-
-      allowNull: true
-
+      allowNull: true,
     },
     tokenConfirmacion: {
-
       type: DataTypes.STRING,
-
       allowNull: true,
-
-      unique:true
-
+      unique: true,
+    },
+    peso: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    altura: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    reqCalorico: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    objetivo: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    edad: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    genero: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
   },
   {
     sequelize,
-
     modelName: 'Usuario',
-
     tableName: 'usuario',
-    
-    timestamps: true
+    timestamps: true,
   }
+  
 );
+
+ModeloReceta.belongsToMany(ModeloUsuario, {
+    through: UsuarioRecetaModel,
+    foreignKey: 'recetaId',
+    otherKey: 'mail',
+});
+
+ModeloUsuario.belongsToMany(ModeloReceta, {
+  through: UsuarioRecetaModel,
+  foreignKey: 'mail',
+  otherKey: 'recetaId',         
+});
 
 
 

@@ -1,54 +1,35 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import ModeloIngrediente from './ModeloIngrediente';
-import ModeloReceta from './ModeloReceta';
 
-class RecetaIngredienteModel extends Model {
-  public recetaId!: number;
-
-  public ingredienteId!: number;
-
-  public cantidad!: number;
-
-}
+class RecetaIngredienteModel extends Model {}
 
 RecetaIngredienteModel.init(
   {
     recetaId: {
-
       type: DataTypes.INTEGER,
-
-      allowNull: false,
-
       primaryKey: true,
-
+      references: {
+      model: 'Receta',
+      key: 'id',       
+      }
     },
     ingredienteId: {
-
       type: DataTypes.INTEGER,
-
-      allowNull: false,
-
       primaryKey: true,
-
+      references: {
+      model: 'Ingrediente',
+      key: 'codigo',       
+    }
     },
     cantidad: {
-
-      type: DataTypes.FLOAT,
-
-      allowNull: false,
-
+      type: DataTypes.INTEGER,
     },
   },
   {
     sequelize,
-
     modelName: 'RecetaIngrediente',
-
     tableName: 'receta_ingredientes',
-
     timestamps: false,
-    
   }
 );
 
