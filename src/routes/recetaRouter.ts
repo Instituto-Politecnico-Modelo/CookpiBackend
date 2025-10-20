@@ -30,9 +30,19 @@ RecetaRouter.get('/:id', async (req: Request, res: Response) => {
         res.send(respuestaBack)
     }
     else{
-        res.status(405).send("Receta no encontrada")
+        res.status(405).send("Receta no encontrada")    
     }
-
-
-
 });
+
+RecetaRouter.get('/pag/:pagina/:busqueda', async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true);
+    res.send(respuestaBack)
+});
+
+RecetaRouter.get('/pag/:pagina', async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false);
+    res.send(respuestaBack)
+});
+

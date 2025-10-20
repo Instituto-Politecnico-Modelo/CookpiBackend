@@ -8,6 +8,7 @@ import { checkLoginRouter } from './routes/CheckLogin';
 import { RecetaRouter } from './routes/recetaRouter';
 import { LibroRouter } from './routes/librosRouter';
 import { consumoRouter } from './routes/ConsumoRouter';
+import { usuarioRouter } from './routes/UsuarioRouter';
 
 const app = express();
 
@@ -44,6 +45,9 @@ app.use("/libro", LibroRouter)
 
 app.use("/consumo", cors())
 app.use("/consumo", consumoRouter)
+
+app.use("/usuario", cors())
+app.use("/usuario", usuarioRouter)
 
 app.get('/', (req: Request, res: Response) => {
 

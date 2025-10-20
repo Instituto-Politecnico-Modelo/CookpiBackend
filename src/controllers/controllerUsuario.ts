@@ -233,10 +233,17 @@ export  class controllerUsuario{
         return mail;
     }
 
+    static async usuarioPorMail(mail : string){
+
+        return await ModeloUsuario.findOne({where : {mail : mail}})
+        
+
+    }
+
 
     static async cargarConsumo(body : any){
         console.log("N H E")
-        UsuarioRecetaModel.create({idReceta : body.idReceta, mail : body.mail})
+        UsuarioRecetaModel.create({recetaId : body.idReceta, mail : body.mail + "@gmail.com"})
         console.log("N A S H E")
 
     }
