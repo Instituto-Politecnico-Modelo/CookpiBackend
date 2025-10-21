@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { authenticateToken } from '../middleware/middleware';
 import { controllerReceta } from '../controllers/controllerReceta';
+import LikeModel from '../models/ModeloLike';
+import { controllerUsuario } from '../controllers/controllerUsuario';
 
 export let RecetaRouter = express.Router()
 
@@ -44,5 +46,12 @@ RecetaRouter.get('/pag/:pagina', async (req: Request, res: Response) => {
     
     const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false);
     res.send(respuestaBack)
+});
+
+
+RecetaRouter.post('/like', async (req: Request, res: Response) => {
+    
+    controllerUsuario.like(req.body.mail, req.body.recetaId);
+
 });
 

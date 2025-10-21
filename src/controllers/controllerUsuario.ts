@@ -16,7 +16,9 @@ import { sendConfirmationEmail, sendPasswordResetEmail } from '../config/mailer'
 import UsuarioRecetaModel from "../models/ModeloUsuarioReceta";
 import crypto from 'crypto';
 import { error } from 'console';
-
+import Mail from "nodemailer/lib/mailer";
+import ModeloReceta from "../models/ModeloReceta";
+import LikeModel from "../models/ModeloLike";
 
 export  class controllerUsuario{
 
@@ -234,9 +236,11 @@ export  class controllerUsuario{
     }
 
     static async usuarioPorMail(mail : string){
+                
+        mail = mail + "@gmail.com"
 
         return await ModeloUsuario.findOne({where : {mail : mail}})
-        
+
 
     }
 
@@ -245,6 +249,40 @@ export  class controllerUsuario{
         console.log("N H E")
         UsuarioRecetaModel.create({recetaId : body.idReceta, mail : body.mail + "@gmail.com"})
         console.log("N A S H E")
+
+    }
+    static async consumoUsuario(mail: string){
+
+        mail = mail + "@gmail.com"
+
+        let consumos : any[] = [];
+
+        const respConsumo = await UsuarioRecetaModel.findAll({where : {mail : mail}})
+    
+        for (let i = 0; i < respConsumo.length; i++) {
+            consumos.push(respConsumo[i].recetaId)
+        }
+
+        let recetasData : {nombre : string, momentoDelDia : string, calorias : number}[] = []
+
+        for (let i = 0; i < consumos.length; i++) {
+        
+        let infoReceta = await ModeloReceta.findOne({where : {id : consumos[i]}})
+        
+        if (infoReceta != null){
+            recetasData[i] = {nombre: infoReceta.nombre, momentoDelDia : infoReceta.momentoDelDia, calorias : infoReceta.calorias};
+        }
+    
+    }
+
+        return recetasData;
+    }
+
+    static async like(mail: string, recetaId : number){
+        
+        mail = mail + "@gmail.com"
+
+        LikeModel.create({mail : mail, recetaId: recetaId});
 
     }
 

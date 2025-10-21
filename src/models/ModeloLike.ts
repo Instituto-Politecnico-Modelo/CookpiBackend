@@ -1,23 +1,13 @@
-
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class UsuarioRecetaModel extends Model {
+class LikeModel extends Model {
   public mail!: string;
   public recetaId!: number;
 }
 
-UsuarioRecetaModel.init(
+LikeModel.init(
   {
-    mail: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-      model: 'Usuario',
-      key: 'mail',       
-      }
-    },
     recetaId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -25,16 +15,24 @@ UsuarioRecetaModel.init(
       references: {
       model: 'Receta',
       key: 'id',       
+        }
+    },
+    mail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+      model: 'Usuario',
+      key: 'mail',       
   }
     },
-
   },
   {
     sequelize,
-    tableName: 'usuarioReceta',
-    modelName: 'usuarioReceta',
+    tableName: 'Likes',
+    modelName: 'Likes',
     timestamps: false,
   }
 );
 
-export default UsuarioRecetaModel;
+export default LikeModel;

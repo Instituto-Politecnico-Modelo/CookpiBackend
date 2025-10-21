@@ -82,7 +82,7 @@ export class controllerReceta{
 
         if (buscar){
 
-            return await ModeloReceta.findAll({limit : 2, offset : pagina * 2, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+            return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
         
         }
         if (pagina == -1){
@@ -90,7 +90,7 @@ export class controllerReceta{
         }
         else{  
             
-            return await ModeloReceta.findAll({limit : 2, offset : pagina * 2});
+            return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
              
         }
 

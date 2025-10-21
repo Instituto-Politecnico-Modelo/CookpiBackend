@@ -14,7 +14,7 @@ class ModeloReceta extends Model {
 
     public nombre!: string;
 
-    //public cantEstrellas!: number;
+    public cantLikes!: number;
 
     public descripcion!: string;
 
@@ -22,7 +22,7 @@ class ModeloReceta extends Model {
 
     //public imagen!: string;
 
-    //public tiempo!: number;
+    public tiempo!: number;
 
     public calorias!: number;
     
@@ -34,7 +34,7 @@ class ModeloReceta extends Model {
 
     public momentoDelDia!: string;
 
-    //public dieta!: Dieta;
+    public dieta!: Dieta;
 
 }
 
@@ -74,6 +74,18 @@ ModeloReceta.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    dieta: {
+      type : DataTypes.STRING,
+      allowNull : false
+    },
+    tiempo: {
+      type : DataTypes.INTEGER,
+      allowNull : false
+    },
+    cantLikes: {
+      type : DataTypes.INTEGER,
+      allowNull : true
+    },    
     momentoDelDia: {
       type: DataTypes.STRING,
       allowNull: true,  
