@@ -34,7 +34,7 @@ class ModeloReceta extends Model {
 
     public momentoDelDia!: string;
 
-    public dieta!: Dieta;
+    public dieta!: String;
 
 }
 

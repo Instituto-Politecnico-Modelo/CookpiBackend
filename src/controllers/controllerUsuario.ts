@@ -12,7 +12,7 @@ import { createHash } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { sendConfirmationEmail, sendPasswordResetEmail } from '../config/mailer';
-
+import { Sequelize } from "sequelize";
 import UsuarioRecetaModel from "../models/ModeloUsuarioReceta";
 import crypto from 'crypto';
 import { error } from 'console';
@@ -284,6 +284,26 @@ export  class controllerUsuario{
 
         LikeModel.create({mail : mail, recetaId: recetaId});
 
+        ModeloReceta.update({cantLikes : Sequelize.literal("cantLikes + 1")}, {where : {id : recetaId}})
+
     }
+
+
+    static async isYaLikeada(mail: string, recetaId : number){
+        
+        mail = mail + "@gmail.com"
+
+        const like = await LikeModel.findOne({where : {mail: mail, recetaId : recetaId}})
+        if (like != null){
+            return true
+        }
+        else{
+            return false
+        }
+
+    }
+
+
+
 
 }

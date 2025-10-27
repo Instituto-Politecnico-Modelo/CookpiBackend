@@ -76,24 +76,33 @@ export class controllerReceta{
         
     }
 
-    static async obtenerRecetas(pagina : number, busqueda : string, buscar : boolean){
+    static async obtenerRecetas(pagina : number, busqueda : string, buscar : boolean, filtro : string){
 
         console.log("pipupipu" + " " + pagina + " " + busqueda)
 
-        if (buscar){
-
-            return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
         
+        if (buscar){
+            if(filtro == ""){
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+            }
+            else{
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}, dieta : filtro}})
+            }
         }
         if (pagina == -1){
             return await ModeloReceta.findAll();            
         }
         else{  
             
-            return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
-             
+            if(filtro == ""){
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
+            } 
+            else{
+                console.log("$$$$$$$$$$$$$$:::::::::: " + filtro)
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {dieta : filtro}});
+            }
         }
-
+        
     }
 
 

@@ -38,13 +38,13 @@ RecetaRouter.get('/:id', async (req: Request, res: Response) => {
 
 RecetaRouter.get('/pag/:pagina/:busqueda', async (req: Request, res: Response) => {
     
-    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true);
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, "");
     res.send(respuestaBack)
 });
 
 RecetaRouter.get('/pag/:pagina', async (req: Request, res: Response) => {
     
-    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false);
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false, "");
     res.send(respuestaBack)
 });
 
@@ -53,5 +53,16 @@ RecetaRouter.post('/like', async (req: Request, res: Response) => {
     
     controllerUsuario.like(req.body.mail, req.body.recetaId);
 
+});
+
+RecetaRouter.get('/pag/:pagina/:busqueda/:filtro', async (req: Request, res_Response) =>{
+
+    const respuestaBack = controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, req.params.filtro)
+
+});
+
+RecetaRouter.get('/pagf/:pagina/:filtro', async (req: Request, res: Response) => {
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false, req.params.filtro);
+    res.send(respuestaBack)
 });
 
