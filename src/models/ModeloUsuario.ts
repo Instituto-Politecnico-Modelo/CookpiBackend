@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import ModeloReceta from './ModeloReceta';
 import UsuarioRecetaModel from './ModeloUsuarioReceta';
+import LikeModel from './ModeloLike';
 
 class ModeloUsuario extends Model {
 
@@ -101,6 +102,12 @@ ModeloReceta.belongsToMany(ModeloUsuario, {
 
 ModeloUsuario.belongsToMany(ModeloReceta, {
   through: UsuarioRecetaModel,
+  foreignKey: 'mail',
+  otherKey: 'recetaId',         
+});
+
+ModeloUsuario.belongsToMany(ModeloReceta, {
+  through: LikeModel,
   foreignKey: 'mail',
   otherKey: 'recetaId',         
 });

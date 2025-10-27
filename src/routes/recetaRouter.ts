@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { authenticateToken } from '../middleware/middleware';
 import { controllerReceta } from '../controllers/controllerReceta';
+import LikeModel from '../models/ModeloLike';
+import { controllerUsuario } from '../controllers/controllerUsuario';
 
 export let RecetaRouter = express.Router()
 
@@ -30,9 +32,37 @@ RecetaRouter.get('/:id', async (req: Request, res: Response) => {
         res.send(respuestaBack)
     }
     else{
-        res.status(405).send("Receta no encontrada")
+        res.status(405).send("Receta no encontrada")    
     }
+});
+
+RecetaRouter.get('/pag/:pagina/:busqueda', async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, "");
+    res.send(respuestaBack)
+});
+
+RecetaRouter.get('/pag/:pagina', async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false, "");
+    res.send(respuestaBack)
+});
 
 
+RecetaRouter.post('/like', async (req: Request, res: Response) => {
+    
+    controllerUsuario.like(req.body.mail, req.body.recetaId);
 
 });
+
+RecetaRouter.get('/pag/:pagina/:busqueda/:filtro', async (req: Request, res_Response) =>{
+
+    const respuestaBack = controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, req.params.filtro)
+
+});
+
+RecetaRouter.get('/pagf/:pagina/:filtro', async (req: Request, res: Response) => {
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, "", false, req.params.filtro);
+    res.send(respuestaBack)
+});
+

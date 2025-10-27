@@ -5,6 +5,7 @@ import ModeloIngrediente from '../models/ModeloIngrediente';
 import { controllerIngrediente } from './controllerIngrediente';
 import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
 import LibroRecetaModel from '../models/LibroReceta';
+import { Model, Op } from 'sequelize';
 
 export class controllerReceta{
 
@@ -72,6 +73,35 @@ export class controllerReceta{
         console.log("YA LO SE   "+ receta?.procedimiento);
 
         return receta;
+        
+    }
+
+    static async obtenerRecetas(pagina : number, busqueda : string, buscar : boolean, filtro : string){
+
+        console.log("pipupipu" + " " + pagina + " " + busqueda)
+
+        
+        if (buscar){
+            if(filtro == ""){
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+            }
+            else{
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}, dieta : filtro}})
+            }
+        }
+        if (pagina == -1){
+            return await ModeloReceta.findAll();            
+        }
+        else{  
+            
+            if(filtro == ""){
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
+            } 
+            else{
+                console.log("$$$$$$$$$$$$$$:::::::::: " + filtro)
+                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {dieta : filtro}});
+            }
+        }
         
     }
 
