@@ -6,6 +6,7 @@ import { controllerIngrediente } from './controllerIngrediente';
 import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
 import LibroRecetaModel from '../models/LibroReceta';
 import { Model, Op } from 'sequelize';
+import { Sequelize } from "sequelize";
 
 export class controllerReceta{
 
@@ -98,11 +99,18 @@ export class controllerReceta{
                 return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
             } 
             else{
-                console.log("$$$$$$$$$$$$$$:::::::::: " + filtro)
                 return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {dieta : filtro}});
             }
         }
         
+    }
+
+
+    static async obtenerRecomendaciones(pagina : number, kcals : string){
+        
+        return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {calorias : Sequelize.literal("calorias <= "+ kcals.toString())}});
+
+
     }
 
 

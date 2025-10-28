@@ -66,3 +66,9 @@ RecetaRouter.get('/pagf/:pagina/:filtro', async (req: Request, res: Response) =>
     res.send(respuestaBack)
 });
 
+
+RecetaRouter.get('/pagr/:pagina/:kcal', async (req: Request, res : Response) =>{
+    console.log("P A G I N A : : : : : : : : " + req.params.pagina)
+    const respuestaBack = await controllerReceta.obtenerRecomendaciones(+req.params.pagina, req.params.kcal)
+    res.send(respuestaBack)
+});

@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { controllerUsuario } from '../controllers/controllerUsuario';
+import { authenticateToken } from '../middleware/middleware';
 
 export let consumoRouter = express.Router()
 
@@ -15,9 +16,14 @@ consumoRouter.post('/' ,async (req: Request, res: Response) => {
 
 consumoRouter.get('/:mail',async (req: Request, res: Response) => {
 
-    console.log("_:_:_:_:_:_:_:__:_:_:_")
-    console.log(await controllerUsuario.consumoUsuario(req.params.mail))
-    console.log("_:_:_:_:_:_:_:__:_:_:_")
     res.send( await controllerUsuario.consumoUsuario(req.params.mail));
 
+});
+
+
+consumoRouter.delete('/:mail/:recetaId' ,authenticateToken ,async (req: Request, res: Response) => {
+
+    console.log("MAAAAAAAAIL: " + req.params.mail)
+    res.send( await controllerUsuario.borrarConsumoUsuario(req.params.mail, +req.params.recetaId))
+    
 });

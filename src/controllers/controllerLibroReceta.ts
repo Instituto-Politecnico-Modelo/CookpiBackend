@@ -11,9 +11,6 @@ export class controllerLibro{
 
     static async crearLibro(body : any, authHeader: string | undefined){
 
-
-        console.log("hola");
-
         if (authHeader){    
             const token = authHeader && authHeader.split(' ')[1];
             console.log(token)
@@ -62,9 +59,7 @@ export class controllerLibro{
     
     }
 
-    console.log("__________________________________")
-    console.log(recetasData[0].nombre);
-    console.log("__________________________________")
+
     return recetasData;
 
 

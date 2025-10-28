@@ -263,14 +263,14 @@ export  class controllerUsuario{
             consumos.push(respConsumo[i].recetaId)
         }
 
-        let recetasData : {nombre : string, momentoDelDia : string, calorias : number}[] = []
+        let recetasData : {id: number, nombre : string, momentoDelDia : string, calorias : number}[] = []
 
         for (let i = 0; i < consumos.length; i++) {
         
         let infoReceta = await ModeloReceta.findOne({where : {id : consumos[i]}})
         
         if (infoReceta != null){
-            recetasData[i] = {nombre: infoReceta.nombre, momentoDelDia : infoReceta.momentoDelDia, calorias : infoReceta.calorias};
+            recetasData[i] = {id: infoReceta.id, nombre: infoReceta.nombre, momentoDelDia : infoReceta.momentoDelDia, calorias : infoReceta.calorias};
         }
     
     }
@@ -300,6 +300,14 @@ export  class controllerUsuario{
         else{
             return false
         }
+
+    }
+    static async borrarConsumoUsuario(mail: string, recetaId : number){
+
+        mail = mail + "@gmail.com"
+
+        const respConsumo = await UsuarioRecetaModel.destroy({where : {mail : mail, recetaid : recetaId}})
+
 
     }
 
