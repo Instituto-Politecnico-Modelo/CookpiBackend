@@ -12,7 +12,7 @@ export class controllerLibro{
     static async crearLibro(body : any, authHeader: string | undefined){
 
 
-        console.log("hola");
+        
 
         if (authHeader){    
             const token = authHeader && authHeader.split(' ')[1];
@@ -26,9 +26,9 @@ export class controllerLibro{
         
         body["mail"] = mail;
 
-        const Libro = ModeloLibroReceta.create(body)
+        const Libro = await ModeloLibroReceta.create(body)
 
-        return Libro;
+        return Libro.id;
     }
 
     static async agregarReceta(body : any){
@@ -43,7 +43,7 @@ export class controllerLibro{
     static async recetasDeLibro(idLibro : string){
     
     let recetas : number[] = [];
-    let recetasData : {nombre : string, descripcion : string}[] = [];
+    let recetasData : {id: number, nombre : string, descripcion : string}[] = [];
 
 
     const respReceta = await LibroRecetaModel.findAll({where : {libroId : idLibro}})
@@ -57,19 +57,27 @@ export class controllerLibro{
         let infoReceta = await ModeloReceta.findOne({where : {id : recetas[i]}})
         
         if (infoReceta != null){
-            recetasData[i] = {nombre: infoReceta.nombre, descripcion : infoReceta.descripcion};
+            recetasData[i] = {id: infoReceta.id, nombre: infoReceta.nombre, descripcion : infoReceta.descripcion};
         }
     
     }
 
-    console.log("__________________________________")
-    console.log(recetasData[0].nombre);
-    console.log("__________________________________")
     return recetasData;
-
-
 
     }
 
+    static async eliminarReceta(idLibro : number, idReceta : number){
 
+        const resp = await LibroRecetaModel.destroy({where : {libroId : idLibro, recetaId : idReceta}});
+    }
+
+    static async eliminarLibro(idLibro : number){
+        try {       
+            await LibroRecetaModel.destroy({where : {libroId : idLibro}});
+            const resp = await ModeloLibroReceta.destroy({where : {id : idLibro}});
+            return resp;
+        } catch (error) {
+            console.log(error)
+        }   
+    }
 }

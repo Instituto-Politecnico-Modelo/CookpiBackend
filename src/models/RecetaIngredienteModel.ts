@@ -1,8 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-class RecetaIngredienteModel extends Model {}
+class RecetaIngredienteModel extends Model {
 
+
+  public recetaId!: number;
+  public ingredienteId!: number;
+  public cantidad!: number;
+}
 RecetaIngredienteModel.init(
   {
     recetaId: {

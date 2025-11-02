@@ -5,6 +5,7 @@ import sequelize from '../config/database';
 class UsuarioRecetaModel extends Model {
   public mail!: string;
   public recetaId!: number;
+  public cantidad!: number;
 }
 
 UsuarioRecetaModel.init(
@@ -26,6 +27,10 @@ UsuarioRecetaModel.init(
       model: 'Receta',
       key: 'id',       
   }
+    },
+    cantidad: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
 
   },

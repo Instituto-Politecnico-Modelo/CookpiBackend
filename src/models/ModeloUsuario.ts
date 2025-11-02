@@ -16,8 +16,6 @@ class ModeloUsuario extends Model {
 
     public mail!: string;
 
-    public descripcion?: string;
-
     public tokenConfirmacion?:string;
 
     public peso!: number;
@@ -46,10 +44,6 @@ ModeloUsuario.init(
       primaryKey: true,
       allowNull: false,
       unique: true,
-    },
-    descripcion: {
-      type: DataTypes.TEXT,
-      allowNull: true,
     },
     confirmado: {
       type: DataTypes.BOOLEAN,

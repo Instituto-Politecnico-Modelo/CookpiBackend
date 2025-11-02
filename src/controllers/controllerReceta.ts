@@ -6,6 +6,7 @@ import { controllerIngrediente } from './controllerIngrediente';
 import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
 import LibroRecetaModel from '../models/LibroReceta';
 import { Model, Op } from 'sequelize';
+import IngredienteModel from '../models/ModeloIngrediente';
 
 export class controllerReceta{
 
@@ -56,7 +57,7 @@ export class controllerReceta{
 
         }
 
-        return receta;
+        return receta.id;
 
     }
 
@@ -78,7 +79,7 @@ export class controllerReceta{
 
     static async obtenerRecetas(pagina : number, busqueda : string, buscar : boolean, filtro : string){
 
-        console.log("pipupipu" + " " + pagina + " " + busqueda)
+        //console.log("pipupipu" + " " + pagina + " " + busqueda + " " + filtro +  " " + buscar)
 
         
         if (buscar){
@@ -98,7 +99,7 @@ export class controllerReceta{
                 return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
             } 
             else{
-                console.log("$$$$$$$$$$$$$$:::::::::: " + filtro)
+
                 return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {dieta : filtro}});
             }
         }
@@ -106,4 +107,41 @@ export class controllerReceta{
     }
 
 
+
+    static async obtenerRecomendaciones(kcal: number, pagina: number){
+
+        return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{calorias : {[Op.lte]: kcal}}});
+
+    }
+
+
+    static async obtenerIngredientesDeReceta(idR : string){
+        console.log("ID RECETA EN CONTROLLER: " + idR);
+        let ingredientes : number[] = [];
+        let cantidades : number[] = [];
+        let ingredientesData : {nombre : string, cantidad : number}[] = [];
+
+        const respIngredientes = await RecetaIngredienteModel.findAll({where: {recetaId : parseInt(idR)}})
+        
+        for (let i = 0; i < respIngredientes.length; i++) {
+            ingredientes.push(respIngredientes[i].ingredienteId)
+            cantidades.push(respIngredientes[i].cantidad)
+        }
+
+        for (let i = 0; i < ingredientes.length; i++) {
+            const infoIngrediente = await IngredienteModel.findOne({where: {codigo: ingredientes[i]}})
+            if (infoIngrediente) {
+                ingredientesData.push({nombre: infoIngrediente.nombre, cantidad: cantidades[i]})
+            }
+        }
+
+        return ingredientesData;
+    }
+
+
+    static async obtenerRecetaDelDia(){
+        const recetas = await ModeloReceta.findAll();
+        const indiceAleatorio = Math.floor(Math.random() * recetas.length);
+        return recetas[indiceAleatorio];
+    }
 }

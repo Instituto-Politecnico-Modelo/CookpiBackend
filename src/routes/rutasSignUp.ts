@@ -30,9 +30,13 @@ import ModeloUsuario from '../models/ModeloUsuario';
     });
 
     signUpRouter.get('/confirmar/:token',async (req: Request, res: Response) => {
-        
-        const token = req.params.token
-
-        ModeloUsuario.update({confirmado : true}, {where : {tokenConfirmacion : token}})
+        try {
+            const token = req.params.token
+            await ModeloUsuario.update({confirmado : true}, {where : {tokenConfirmacion : token}})
+            res.send("Usuario confirmado")
+        } catch (error) {
+            console.error("Error al confirmar usuario:", error);
+            res.status(500).send("Error al confirmar usuario");
+        }
 
     });
