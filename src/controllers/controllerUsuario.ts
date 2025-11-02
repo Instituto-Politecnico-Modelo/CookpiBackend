@@ -79,7 +79,22 @@ export  class controllerUsuario{
             const tokenConfirmacion = crypto.randomBytes(32).toString('hex').slice(0, 32)
 
             body.reqCalorico = (body.peso * 10) + (6.25 * body.altura) - 5 * body.edad - 161;
-    
+
+            
+            switch(body.objetivo){
+                case "3":
+                    body.reqCalorico = body.reqCalorico - body.reqCalorico * 0.20;
+                    break;
+                case "2":
+                    body.reqCalorico = body.reqCalorico;
+                    break;
+                case "1":
+                    body.reqCalorico = body.reqCalorico + body.reqCalorico * 0.15;
+                    break;
+            }
+
+            body.reqCalorico = Math.round(body.reqCalorico);
+
             body.tokenConfirmacion = tokenConfirmacion;
 
             const usuario =  await controllerUsuario.crearUsuario(body);
@@ -244,33 +259,55 @@ export  class controllerUsuario{
 
     }
 
-
     static async cargarConsumo(body : any){
-        console.log("N H E")
-        UsuarioRecetaModel.create({recetaId : body.idReceta, mail : body.mail + "@gmail.com"})
-        console.log("N A S H E")
+        if (await UsuarioRecetaModel.findOne({where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})){
+            let consumoActual = await UsuarioRecetaModel.findOne({where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})
+            consumoActual!.cantidad = consumoActual!.cantidad + 1
+            await UsuarioRecetaModel.update({cantidad : consumoActual!.cantidad}, {where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})
+        }
+        else{    
+        UsuarioRecetaModel.create({recetaId : body.idReceta, mail : body.mail + "@gmail.com", cantidad : 1});
+        }
+    }
+
+    static async eliminarConsumo(mail : string, idReceta : number){
+
+        const consumo = await UsuarioRecetaModel.findOne({where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+        if (consumo){
+            if (consumo.cantidad > 1){
+                consumo.cantidad = consumo.cantidad - 1
+                await UsuarioRecetaModel.update({cantidad : consumo.cantidad}, {where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+            }
+            else{
+                await UsuarioRecetaModel.destroy({where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+            }
+        }
 
     }
+
+
     static async consumoUsuario(mail: string){
 
         mail = mail + "@gmail.com"
 
         let consumos : any[] = [];
+        let cantidades : number[] = [];
 
         const respConsumo = await UsuarioRecetaModel.findAll({where : {mail : mail}})
     
         for (let i = 0; i < respConsumo.length; i++) {
             consumos.push(respConsumo[i].recetaId)
+            cantidades.push(respConsumo[i].cantidad)
         }
 
-        let recetasData : {nombre : string, momentoDelDia : string, calorias : number}[] = []
+        let recetasData : {id : number, nombre : string, momentoDelDia : string, calorias : number, cantidad : number}[] = []
 
         for (let i = 0; i < consumos.length; i++) {
         
         let infoReceta = await ModeloReceta.findOne({where : {id : consumos[i]}})
         
         if (infoReceta != null){
-            recetasData[i] = {nombre: infoReceta.nombre, momentoDelDia : infoReceta.momentoDelDia, calorias : infoReceta.calorias};
+            recetasData[i] = {id: infoReceta.id, nombre: infoReceta.nombre, momentoDelDia : infoReceta.momentoDelDia, calorias : infoReceta.calorias, cantidad : cantidades[i]};
         }
     
     }

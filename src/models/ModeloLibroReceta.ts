@@ -6,7 +6,7 @@ import { Mode } from 'fs';
 import ModeloUsuario from './ModeloUsuario';
 
 class ModeloLibro extends Model {
-
+    public id!: number;
     public nombre!: string;
     public descripcion!: string;
     public usuario!: ModeloUsuario;

@@ -9,8 +9,8 @@ export let RecetaRouter = express.Router()
 RecetaRouter.post('/' ,async (req: Request, res: Response) => {
     
     console.log(req.body);
-    controllerReceta.crearReceta(req.body, req.headers['authorization']);
-    
+    res.send(await controllerReceta.crearReceta(req.body, req.headers['authorization']));
+
 });
 
 RecetaRouter.get('/recetasPorLibro/:id', async (req: Request, res: Response) => {
@@ -36,6 +36,7 @@ RecetaRouter.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
+
 RecetaRouter.get('/pag/:pagina/:busqueda', async (req: Request, res: Response) => {
     
     const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, "");
@@ -55,10 +56,10 @@ RecetaRouter.post('/like', async (req: Request, res: Response) => {
 
 });
 
-RecetaRouter.get('/pag/:pagina/:busqueda/:filtro', async (req: Request, res_Response) =>{
+RecetaRouter.get('/pag/:pagina/:busqueda/:filtro', async (req: Request, res: Response) =>{
 
-    const respuestaBack = controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, req.params.filtro)
-
+    const respuestaBack = await controllerReceta.obtenerRecetas(+req.params.pagina, req.params.busqueda, true, req.params.filtro)
+    res.send(respuestaBack)
 });
 
 RecetaRouter.get('/pagf/:pagina/:filtro', async (req: Request, res: Response) => {
@@ -66,3 +67,26 @@ RecetaRouter.get('/pagf/:pagina/:filtro', async (req: Request, res: Response) =>
     res.send(respuestaBack)
 });
 
+
+RecetaRouter.get('/pagr/:kcal/:pagina', async (req: Request, res: Response) => {
+    const respuestaBack = await controllerReceta.obtenerRecomendaciones(+req.params.kcal, +req.params.pagina);
+    res.send(respuestaBack);
+});
+
+
+RecetaRouter.get("/ingredientes/:id", async (req: Request, res: Response) => {
+    
+    const respuestaBack = await controllerReceta.obtenerIngredientesDeReceta(req.params.id);
+    res.send(respuestaBack);
+});
+    
+RecetaRouter.get("/del/dia", async (req: Request, res: Response) => {
+    try {
+        const respuestaBack = await controllerReceta.obtenerRecetaDelDia();
+        res.send(respuestaBack);
+    } catch (error) {
+    
+        console.error("Error al obtener la receta del día:", error);
+        res.status(500).send("Error al obtener la receta del día");
+    }
+});

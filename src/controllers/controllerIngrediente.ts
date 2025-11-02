@@ -69,7 +69,7 @@ export  class controllerIngrediente{
         const productos = data.products;
 
         const lista = productos
-            .filter((p: any) => p.product_name && p.code) // asegurarse de que tengan nombre y código
+            .filter((p: any) => p.product_name && p.code) 
             .map((p: any) => ({
                 nombre: p.product_name,
                 codigo: p.code

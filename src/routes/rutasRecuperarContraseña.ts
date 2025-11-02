@@ -11,10 +11,12 @@ import { Sequelize, DataTypes } from 'sequelize';
 
 
     recuperarContraseñaRouter.post('/cambiar',async (req: Request, res: Response) => {
+        try {       
+            res.send(await controllerUsuario.actuaiizarContraseña(req.body.token, req.body.password))
+        } catch (error) {
+            res.status(500).send("Error al cambiar contraseña");
+        }
 
-        console.log(req.body)
-        res.send(controllerUsuario.actuaiizarContraseña(req.body.token, req.body.password))
-        
     });
 
     recuperarContraseñaRouter.post('/',async (req: Request, res: Response) => {  
