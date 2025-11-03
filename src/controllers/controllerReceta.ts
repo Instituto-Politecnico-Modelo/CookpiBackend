@@ -9,9 +9,7 @@ import { Model, Op } from 'sequelize';
 import IngredienteModel from '../models/ModeloIngrediente';
 
 export class controllerReceta{
-
     static secretKey = "Ensaladardamal"
-
     static async crearReceta(body : any, authHeader: string | undefined){
         
         if (authHeader){    
@@ -116,7 +114,6 @@ export class controllerReceta{
 
 
     static async obtenerIngredientesDeReceta(idR : string){
-        console.log("ID RECETA EN CONTROLLER: " + idR);
         let ingredientes : number[] = [];
         let cantidades : number[] = [];
         let ingredientesData : {nombre : string, cantidad : number}[] = [];
