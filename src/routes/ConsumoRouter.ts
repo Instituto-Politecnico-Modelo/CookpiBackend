@@ -25,7 +25,12 @@ consumoRouter.get('/:mail',async (req: Request, res: Response) => {
 });
 
 consumoRouter.delete('/:mail/:idReceta',async (req: Request, res: Response) => {
-
+   try {
+        res.send( await controllerUsuario.eliminarConsumo(req.params.mail, +req.params.idReceta));
+    } catch (error) {
+        console.error("Error al eliminar consumo:", error);
+        res.status(500).send("Error al eliminar consumo");
+    }
 });
 
 consumoRouter.get('/:mail',async (req: Request, res: Response) => {

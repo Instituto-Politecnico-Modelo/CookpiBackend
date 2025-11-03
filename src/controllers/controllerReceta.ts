@@ -84,10 +84,10 @@ export class controllerReceta{
         
         if (buscar){
             if(filtro == ""){
-                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
+                return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where:{nombre : {[Op.like]: "%" + busqueda + "%"}}});    
             }
             else{
-                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{nombre : {[Op.like]: "%" + busqueda + "%"}, dieta : filtro}})
+                return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where:{nombre : {[Op.like]: "%" + busqueda + "%"}, dieta : filtro}})
             }
         }
         if (pagina == -1){
@@ -96,11 +96,11 @@ export class controllerReceta{
         else{  
             
             if(filtro == ""){
-                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4});
+                return await ModeloReceta.findAll({limit : 6, offset : pagina * 6});
             } 
             else{
 
-                return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where: {dieta : filtro}});
+                return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where: {dieta : filtro}});
             }
         }
         
@@ -110,7 +110,7 @@ export class controllerReceta{
 
     static async obtenerRecomendaciones(kcal: number, pagina: number){
 
-        return await ModeloReceta.findAll({limit : 4, offset : pagina * 4, where:{calorias : {[Op.lte]: kcal}}});
+        return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where:{calorias : {[Op.lte]: kcal}}});
 
     }
 
