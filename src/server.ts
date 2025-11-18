@@ -13,6 +13,7 @@ import { usuarioRouter } from './routes/UsuarioRouter';
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const HOST = "0.0.0.0";
 
 const Sequelize = require("sequelize");
 const cors = require("cors");
@@ -71,7 +72,7 @@ app.get('/', (req: Request, res: Response) => {
 
     });
 
-  } catch (error) {
+  }catch (error) {
 
     console.error('Error conectando a la base de datos:', error);
     

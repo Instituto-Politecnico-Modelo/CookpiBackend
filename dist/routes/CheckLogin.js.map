@@ -1,0 +1,1 @@
+{"version":3,"file":"CheckLogin.js","sourceRoot":"","sources":["../../src/routes/CheckLogin.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;AAAA,sDAAqD;AAIrD,yDAA6D;AAGlD,QAAA,gBAAgB,GAAG,iBAAO,CAAC,MAAM,EAAE,CAAA;AAGzC,wBAAgB,CAAC,GAAG,CAAC,GAAG,EAAE,8BAAiB,EAAC,CAAO,GAAY,EAAE,GAAa,EAAE,EAAE;IAE/E,GAAG,CAAC,IAAI,CAAC,IAAI,CAAC,CAAA;AAClB,CAAC,CAAA,CAAC,CAAC"}

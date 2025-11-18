@@ -39,11 +39,12 @@ export class controllerReceta{
         body.carbohidratos  += carbohidratos * ingrediente.cantidad / 100;
     }
     
-    console.log(body)
-        const receta = await ModeloReceta.create(
-            body
-        );
+    const receta = await ModeloReceta.create(
+        body
+    );
 
+
+    
 
         let tablaIntermedia = {"recetaId" : receta.id, ingredienteId:"", cantidad:0}
         
@@ -102,18 +103,12 @@ export class controllerReceta{
 
                 return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where: {dieta : filtro}});
             }
-        }
-        
+        }  
     }
-
-
 
     static async obtenerRecomendaciones(kcal: number, pagina: number){
-
         return await ModeloReceta.findAll({limit : 6, offset : pagina * 6, where:{calorias : {[Op.lte]: kcal}}});
-
     }
-
 
     static async obtenerIngredientesDeReceta(idR : string){
         console.log("ID RECETA EN CONTROLLER: " + idR);
@@ -137,7 +132,6 @@ export class controllerReceta{
 
         return ingredientesData;
     }
-
 
     static async obtenerRecetaDelDia(){
         const recetas = await ModeloReceta.findAll();

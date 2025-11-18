@@ -341,6 +341,14 @@ export  class controllerUsuario{
     }
 
 
+    static async borrarLike(mail : string, recetaId : number){
+                
+        mail = mail + "@gmail.com"
+        
+        LikeModel.destroy({where : {mail: mail, recetaId : recetaId}})
+        ModeloReceta.update({cantLikes : Sequelize.literal("cantLikes - 1")}, {where : {id : recetaId}})
 
+
+    }
 
 }

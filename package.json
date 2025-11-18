@@ -4,10 +4,10 @@
   "main": "server.ts",
   "scripts": {
     "test": "jest",
-    "start": "npx ts-node src/server.ts",
-    "start:debug": "npx ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "npx tsc",
-    "serve": "npx ts-node src/server.ts"
+    "start": "node dist/server.js",
+    "start:dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
+    "serve": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +36,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
     "sequelize": "^6.37.7",

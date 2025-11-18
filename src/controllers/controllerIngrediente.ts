@@ -96,8 +96,17 @@ lista.forEach((producto: {nombre:string, codigo: string}) => {
 
 
 
+static async existenIngredientes() : Promise<boolean>{
+
+  if(await ModeloIngrediente.findOne() == null){
+    return false;
+  }
+  else{
+    return true;
+  }
 
 
+}
 
 
 
