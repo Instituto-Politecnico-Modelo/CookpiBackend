@@ -12,6 +12,9 @@ RUN npm install sequelize
 
 RUN npm i @sequelize/mysql
 
+
+RUN npm install -g typescript
+
 RUN npx tsc 
 
 FROM node:alpine AS produccion

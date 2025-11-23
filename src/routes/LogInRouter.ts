@@ -10,7 +10,9 @@ import { controllerIngrediente } from '../controllers/controllerIngrediente';
     loginRouter.post('/', async (req: Request, res: Response) => {
         const respuestaBack = await controllerUsuario.login(req.body)
         
-        //controllerIngrediente.obtenerAlimentosPopulares()
+        if(!(await controllerIngrediente.existenIngredientes())){
+            controllerIngrediente.obtenerAlimentosPopulares()
+        }
         if(respuestaBack.error){
 
             res.status(405).send(respuestaBack.mensaje)

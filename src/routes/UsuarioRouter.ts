@@ -14,7 +14,6 @@ usuarioRouter.get('/:mail' ,authenticateToken ,async (req: Request, res: Respons
         console.error("Error al obtener usuario por mail:", error);
         res.status(500).send("Error al obtener usuario por mail");
     }
-
 });
 
 usuarioRouter.post('/like',authenticateToken , async (req: Request, res: Response) => {
@@ -24,7 +23,15 @@ usuarioRouter.post('/like',authenticateToken , async (req: Request, res: Respons
         console.error("Error al dar like a la receta:", error);
         res.status(500).send("Error al dar like a la receta");
     }
+});
 
+usuarioRouter.delete('/like/:recetaId/:mail',authenticateToken , async (req: Request, res: Response) => {
+    try {
+        res.send( await controllerUsuario.borrarLike(req.params.mail, +req.params.recetaId));
+    } catch (error) {
+        console.error("Error al borrar el like de la receta:", error);
+        res.status(200).send("Error al borrar el like de la receta:");
+    }
 });
 
 usuarioRouter.get('/like/:mail/:recetaId' ,authenticateToken ,async (req: Request, res: Response) => {

@@ -1,5 +1,3 @@
-
-
 import { BelongsToMany, DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import ModeloLibro from './ModeloLibroReceta';
@@ -89,7 +87,8 @@ ModeloReceta.init(
     momentoDelDia: {
       type: DataTypes.STRING,
       allowNull: true,  
-    }
+    },
+
 
   },
   {
@@ -109,13 +108,11 @@ ModeloReceta.belongsToMany(ModeloIngrediente, {
 
 });
 
+
 ModeloIngrediente.belongsToMany(ModeloReceta, {
   through: RecetaIngredienteModel,
   foreignKey: 'ingredienteId',
   otherKey: 'recetaId',
 });
-
-
-
 
 export default ModeloReceta;

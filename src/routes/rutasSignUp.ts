@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import { Sequelize, DataTypes } from 'sequelize';
-
+import { controllerIngrediente } from '../controllers/controllerIngrediente';
 
 export let signUpRouter = express.Router()
 
@@ -11,6 +11,10 @@ import ModeloUsuario from '../models/ModeloUsuario';
 
 
     signUpRouter.post('/',async (req: Request, res: Response) => {
+
+        if(!(await controllerIngrediente.existenIngredientes())){
+            controllerIngrediente.obtenerAlimentosPopulares()
+        }
         
         console.log(req.body)
         
