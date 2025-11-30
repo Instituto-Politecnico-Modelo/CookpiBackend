@@ -15,10 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.consumoRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const controllerUsuario_1 = require("../controllers/controllerUsuario");
+const middleware_1 = require("../middleware/middleware");
 exports.consumoRouter = express_1.default.Router();
 exports.consumoRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield controllerUsuario_1.controllerUsuario.cargarConsumo(req.body);
+        yield controllerUsuario_1.controllerUsuario.cargarConsumo(req.body.idReceta, req.headers['authorization']);
         res.sendStatus(200);
         console.log(req.body);
     }
@@ -27,31 +28,22 @@ exports.consumoRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(500).send("Error al cargar consumo");
     }
 }));
-exports.consumoRouter.get('/:mail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.consumoRouter.get('/', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.consumoUsuario(req.params.mail));
+        res.send(yield controllerUsuario_1.controllerUsuario.consumoUsuario(req.headers['authorization']));
     }
     catch (error) {
         console.error("Error al obtener consumo del usuario:", error);
         res.status(500).send("Error al obtener consumo del usuario");
     }
 }));
-exports.consumoRouter.delete('/:mail/:idReceta', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.consumoRouter.delete('/:idReceta', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.eliminarConsumo(req.params.mail, +req.params.idReceta));
+        res.send(yield controllerUsuario_1.controllerUsuario.eliminarConsumo(req.headers['authorization'], +req.params.idReceta));
     }
     catch (error) {
         console.error("Error al eliminar consumo:", error);
         res.status(500).send("Error al eliminar consumo");
-    }
-}));
-exports.consumoRouter.get('/:mail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.send(yield controllerUsuario_1.controllerUsuario.consumoUsuario(req.params.mail));
-    }
-    catch (error) {
-        console.error("Error al obtener consumo del usuario:", error);
-        res.status(500).send("Error al obtener consumo del usuario");
     }
 }));
 exports.consumoRouter.delete('/:mail/:idReceta', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

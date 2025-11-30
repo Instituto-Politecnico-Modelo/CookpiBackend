@@ -17,9 +17,9 @@ const express_1 = __importDefault(require("express"));
 const controllerUsuario_1 = require("../controllers/controllerUsuario");
 const middleware_1 = require("../middleware/middleware");
 exports.usuarioRouter = express_1.default.Router();
-exports.usuarioRouter.get('/:mail', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usuarioRouter.get('/', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.usuarioPorMail(req.params.mail));
+        res.send(yield controllerUsuario_1.controllerUsuario.usuarioPorMail(req.headers['authorization']));
     }
     catch (error) {
         console.error("Error al obtener usuario por mail:", error);
@@ -28,29 +28,57 @@ exports.usuarioRouter.get('/:mail', middleware_1.authenticateToken, (req, res) =
 }));
 exports.usuarioRouter.post('/like', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.like(req.body.mail, req.body.recetaId));
+        res.send(yield controllerUsuario_1.controllerUsuario.like(req.headers['authorization'], req.body.recetaId));
     }
     catch (error) {
         console.error("Error al dar like a la receta:", error);
         res.status(500).send("Error al dar like a la receta");
     }
 }));
-exports.usuarioRouter.delete('/like/:recetaId/:mail', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usuarioRouter.delete('/like/:recetaId/', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.borrarLike(req.params.mail, +req.params.recetaId));
+        res.send(yield controllerUsuario_1.controllerUsuario.borrarLike(req.headers['authorization'], +req.params.recetaId));
     }
     catch (error) {
         console.error("Error al borrar el like de la receta:", error);
         res.status(200).send("Error al borrar el like de la receta:");
     }
 }));
-exports.usuarioRouter.get('/like/:mail/:recetaId', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usuarioRouter.get('/like/:recetaId', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerUsuario_1.controllerUsuario.isYaLikeada(req.params.mail, +req.params.recetaId));
+        res.send(yield controllerUsuario_1.controllerUsuario.isYaLikeada(req.headers['authorization'], +req.params.recetaId));
     }
     catch (error) {
         console.error("Error al verificar si la receta ya fue likeada:", error);
         res.status(500).send("Error al verificar si la receta ya fue likeada");
+    }
+}));
+exports.usuarioRouter.get('/nombrePorMail/:mail', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("Mail recibido:", req.params.mail);
+        res.send(yield controllerUsuario_1.controllerUsuario.nombrePorMail(req.params.mail));
+    }
+    catch (error) {
+        console.error("Error al verificar si la receta ya fue likeada:", error);
+        res.status(500).send("Error al verificar si la receta ya fue likeada");
+    }
+}));
+exports.usuarioRouter.get('/verificado', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.send(yield controllerUsuario_1.controllerUsuario.verificado(req.headers['authorization']));
+    }
+    catch (error) {
+        console.error("Error al verificar si la receta ya fue likeada:", error);
+        res.status(500).send("Error al verificar si la receta ya fue likeada");
+    }
+}));
+exports.usuarioRouter.post('/reenviarverificacion', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.send(yield controllerUsuario_1.controllerUsuario.reenviarVerificacion(req.headers['authorization']));
+    }
+    catch (error) {
+        console.error("Error al reenviar correo de verificación:", error);
+        res.status(500).send("Error al reenviar correo de verificación");
     }
 }));
 //# sourceMappingURL=UsuarioRouter.js.map

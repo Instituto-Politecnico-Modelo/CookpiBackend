@@ -9,7 +9,7 @@ export let RecetaRouter = express.Router()
 RecetaRouter.post('/' ,async (req: Request, res: Response) => {
     
     console.log(req.body);
-    res.send(await controllerReceta.crearReceta(req.body, req.headers['authorization']));
+    res.send(await controllerReceta.crearReceta(req.body, req.headers['authorization'] as string));
 
 });
 
@@ -88,5 +88,16 @@ RecetaRouter.get("/del/dia", async (req: Request, res: Response) => {
     
         console.error("Error al obtener la receta del día:", error);
         res.status(500).send("Error al obtener la receta del día");
+    }
+});
+
+RecetaRouter.put("/:id", async (req: Request, res: Response) => {
+    try {
+        const respuestaBack = await controllerReceta.editarReceta(+req.params.id, req.body, req.headers['authorization'] as string);
+        res.send(respuestaBack);
+    } catch (error) {
+    
+        console.error("Error al editar la receta:", error);
+        res.status(500).send("Error al editar la receta: " + error);
     }
 });

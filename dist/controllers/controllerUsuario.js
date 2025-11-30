@@ -18,7 +18,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.controllerUsuario = void 0;
-const jwt_decode_1 = require("jwt-decode");
 const ModeloUsuario_1 = __importDefault(require("../models/ModeloUsuario"));
 const crypto_1 = require("crypto");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -39,11 +38,16 @@ class controllerUsuario {
     static enivarCorreoPassword(mail) {
         return __awaiter(this, void 0, void 0, function* () {
             const usuario = yield ModeloUsuario_1.default.findOne({ where: { mail: mail } });
+            console.log("usuario");
             if (usuario) {
                 const token = usuario.tokenConfirmacion;
                 if (token != undefined) {
                     controllerUsuario.recuperarContraseña(mail, token);
+                    return "Correo de recuperación enviado.";
                 }
+            }
+            else {
+                throw new Error("No existe un usuario con ese correo electrónico.");
             }
         });
     }
@@ -155,13 +159,17 @@ class controllerUsuario {
     }
     static actuaiizarContraseña(token, password) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("ACTUALIZAR CONTRASEÑA LLAMADO");
+            console.log("TOKEN: " + token);
             const usuario = yield ModeloUsuario_1.default.findOne({ where: { tokenConfirmacion: token } });
+            console.log("TOKEN RECIBIDO");
             if (usuario) {
+                console.log("Usuario encontrado para actualizar contraseña.");
                 const payload = {
                     "mail": usuario.mail
                 };
                 const hashedPassword = controllerUsuario.hashSHA256(password);
-                yield ModeloUsuario_1.default.update({ password: hashedPassword, tokenConfirmacion: this.generarJWT(payload) }, { where: { tokenConfirmacion: token } });
+                yield ModeloUsuario_1.default.update({ password: hashedPassword }, { where: { tokenConfirmacion: token } });
             }
         });
     }
@@ -170,51 +178,54 @@ class controllerUsuario {
             let token = "";
             if (authHeader) {
                 token = authHeader && authHeader.split(' ')[1];
-                console.log(token);
+                //console.log(token)
                 console.log(jsonwebtoken_1.default.verify(token, this.secretKey));
-                console.log("TOKEN: " + (0, jwt_decode_1.jwtDecode)(token));
+                //console.log("TOKEN: " + jwtDecode(token));
             }
             const payload = jsonwebtoken_1.default.verify(token, this.secretKey);
-            const mailPre = payload.mail;
-            const mail = mailPre.split("@")[0];
+            const mail = payload.mail;
             return mail;
         });
     }
-    static usuarioPorMail(mail) {
+    static usuarioPorMail(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            mail = mail + "@gmail.com";
+            let mail = yield this.mailPorToken(token);
             return yield ModeloUsuario_1.default.findOne({ where: { mail: mail } });
         });
     }
-    static cargarConsumo(body) {
+    static cargarConsumo(idReceta, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: body.mail + "@gmail.com", recetaId: body.idReceta } })) {
-                let consumoActual = yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: body.mail + "@gmail.com", recetaId: body.idReceta } });
+            let mail = yield this.mailPorToken(token);
+            if (yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: mail, recetaId: idReceta } })) {
+                let consumoActual = yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: mail, recetaId: idReceta } });
                 consumoActual.cantidad = consumoActual.cantidad + 1;
-                yield ModeloUsuarioReceta_1.default.update({ cantidad: consumoActual.cantidad }, { where: { mail: body.mail + "@gmail.com", recetaId: body.idReceta } });
+                yield ModeloUsuarioReceta_1.default.update({ cantidad: consumoActual.cantidad }, { where: { mail: mail, recetaId: idReceta } });
             }
             else {
-                ModeloUsuarioReceta_1.default.create({ recetaId: body.idReceta, mail: body.mail + "@gmail.com", cantidad: 1 });
+                ModeloUsuarioReceta_1.default.create({ recetaId: idReceta, mail: mail, cantidad: 1 });
             }
         });
     }
-    static eliminarConsumo(mail, idReceta) {
+    static eliminarConsumo(token, idReceta) {
         return __awaiter(this, void 0, void 0, function* () {
-            const consumo = yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: mail + "@gmail.com", recetaId: idReceta } });
+            let mail = yield this.mailPorToken(token);
+            console.log("MAILBORRARCONSUMO: " + mail);
+            const consumo = yield ModeloUsuarioReceta_1.default.findOne({ where: { mail: mail, recetaId: idReceta } });
+            console.log(consumo);
             if (consumo) {
                 if (consumo.cantidad > 1) {
                     consumo.cantidad = consumo.cantidad - 1;
-                    yield ModeloUsuarioReceta_1.default.update({ cantidad: consumo.cantidad }, { where: { mail: mail + "@gmail.com", recetaId: idReceta } });
+                    yield ModeloUsuarioReceta_1.default.update({ cantidad: consumo.cantidad }, { where: { mail: mail, recetaId: idReceta } });
                 }
                 else {
-                    yield ModeloUsuarioReceta_1.default.destroy({ where: { mail: mail + "@gmail.com", recetaId: idReceta } });
+                    yield ModeloUsuarioReceta_1.default.destroy({ where: { mail: mail, recetaId: idReceta } });
                 }
             }
         });
     }
-    static consumoUsuario(mail) {
+    static consumoUsuario(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            mail = mail + "@gmail.com";
+            let mail = yield this.mailPorToken(token);
             let consumos = [];
             let cantidades = [];
             const respConsumo = yield ModeloUsuarioReceta_1.default.findAll({ where: { mail: mail } });
@@ -232,16 +243,16 @@ class controllerUsuario {
             return recetasData;
         });
     }
-    static like(mail, recetaId) {
+    static like(token, recetaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            mail = mail + "@gmail.com";
+            let mail = yield this.mailPorToken(token);
             ModeloLike_1.default.create({ mail: mail, recetaId: recetaId });
             ModeloReceta_1.default.update({ cantLikes: sequelize_1.Sequelize.literal("cantLikes + 1") }, { where: { id: recetaId } });
         });
     }
-    static isYaLikeada(mail, recetaId) {
+    static isYaLikeada(token, recetaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            mail = mail + "@gmail.com";
+            let mail = yield this.mailPorToken(token);
             const like = yield ModeloLike_1.default.findOne({ where: { mail: mail, recetaId: recetaId } });
             if (like != null) {
                 return true;
@@ -251,11 +262,49 @@ class controllerUsuario {
             }
         });
     }
-    static borrarLike(mail, recetaId) {
+    static borrarLike(token, recetaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            mail = mail + "@gmail.com";
+            let mail = yield this.mailPorToken(token);
             ModeloLike_1.default.destroy({ where: { mail: mail, recetaId: recetaId } });
             ModeloReceta_1.default.update({ cantLikes: sequelize_1.Sequelize.literal("cantLikes - 1") }, { where: { id: recetaId } });
+        });
+    }
+    static nombrePorMail(mail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const usuario = yield ModeloUsuario_1.default.findOne({ where: { mail: mail } });
+            if (usuario != null) {
+                return usuario.nombre;
+            }
+            else {
+                return null;
+            }
+        });
+    }
+    static verificado(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let mail = yield this.mailPorToken(token);
+            const usuario = yield ModeloUsuario_1.default.findOne({ where: { mail: mail } });
+            if (usuario != null) {
+                return usuario.confirmado;
+            }
+            else {
+                return false;
+            }
+        });
+    }
+    static reenviarVerificacion(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let mail = yield this.mailPorToken(token);
+            const usuario = yield ModeloUsuario_1.default.findOne({ where: { mail: mail } });
+            if (usuario) {
+                const tokenConfirmacion = usuario.tokenConfirmacion;
+                if (tokenConfirmacion) {
+                    (0, mailer_1.sendConfirmationEmail)(mail, tokenConfirmacion);
+                }
+            }
+            else {
+                throw new Error("No existe un usuario con ese correo electrónico.");
+            }
         });
     }
 }

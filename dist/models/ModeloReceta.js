@@ -59,14 +59,14 @@ ModeloReceta.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
-    mailUsuario: {
+    usuarioCreadorId: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
-            model: 'usuario',
-            key: 'mail'
-        },
-    }
+            model: 'Usuario',
+            key: 'mail',
+        }
+    },
 }, {
     sequelize: database_1.default,
     modelName: 'Receta',

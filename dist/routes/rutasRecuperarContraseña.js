@@ -18,13 +18,21 @@ exports.recuperarContraseñaRouter = express_1.default.Router();
 const controllerUsuario_1 = require("../controllers/controllerUsuario");
 exports.recuperarContraseñaRouter.post('/cambiar', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.body);
         res.send(yield controllerUsuario_1.controllerUsuario.actuaiizarContraseña(req.body.token, req.body.password));
     }
     catch (error) {
+        console.log(error);
         res.status(500).send("Error al cambiar contraseña");
     }
 }));
 exports.recuperarContraseñaRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    controllerUsuario_1.controllerUsuario.enivarCorreoPassword(req.body.mail);
+    try {
+        const resp = yield controllerUsuario_1.controllerUsuario.enivarCorreoPassword(req.body.mail);
+        res.send(resp);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
 }));
 //# sourceMappingURL=rutasRecuperarContrase%C3%B1a.js.map

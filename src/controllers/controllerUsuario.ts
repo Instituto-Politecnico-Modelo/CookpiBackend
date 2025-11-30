@@ -40,7 +40,7 @@ export  class controllerUsuario{
     static async enivarCorreoPassword(mail : string){
 
         const usuario = await ModeloUsuario.findOne({ where: { mail: mail } });
-        
+        console.log("usuario")
         if (usuario){
             
             const token = usuario.tokenConfirmacion;
@@ -48,8 +48,11 @@ export  class controllerUsuario{
             if (token != undefined){
 
                 controllerUsuario.recuperarContraseña(mail, token)
-
+                return "Correo de recuperación enviado."
             }
+        }
+        else{
+            throw new Error("No existe un usuario con ese correo electrónico.");
         }
     }
 
@@ -212,10 +215,12 @@ export  class controllerUsuario{
 
     static async actuaiizarContraseña(token: string, password: string) {
     
+    console.log("ACTUALIZAR CONTRASEÑA LLAMADO");
+    console.log("TOKEN: " + token);    
     const usuario = await ModeloUsuario.findOne({ where: { tokenConfirmacion: token } });
-
+    console.log("TOKEN RECIBIDO" );
     if (usuario) {
-
+        console.log("Usuario encontrado para actualizar contraseña.");
         const payload = {
 
             "mail" : usuario.mail
@@ -225,7 +230,7 @@ export  class controllerUsuario{
         const hashedPassword = controllerUsuario.hashSHA256(password);
         
         await ModeloUsuario.update(
-            { password: hashedPassword, tokenConfirmacion: this.generarJWT(payload)},
+            { password: hashedPassword},
             { where: { tokenConfirmacion: token } }
         ); 
 
@@ -240,55 +245,58 @@ export  class controllerUsuario{
 
         if (authHeader){    
             token = authHeader && authHeader.split(' ')[1];
-            console.log(token)
+            //console.log(token)
             console.log(jwt.verify(token, this.secretKey))
-            console.log("TOKEN: " + jwtDecode(token));
+            //console.log("TOKEN: " + jwtDecode(token));
         }
         const payload = jwt.verify(token, this.secretKey)
-        const mailPre = (payload as JwtPayload).mail
-        const mail = mailPre.split("@")[0];
+        const mail = (payload as JwtPayload).mail
         return mail;
     }
 
-    static async usuarioPorMail(mail : string){
+    static async usuarioPorMail(token : string){
                 
-        mail = mail + "@gmail.com"
+        let mail = await this.mailPorToken(token);
 
         return await ModeloUsuario.findOne({where : {mail : mail}})
 
 
     }
 
-    static async cargarConsumo(body : any){
-        if (await UsuarioRecetaModel.findOne({where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})){
-            let consumoActual = await UsuarioRecetaModel.findOne({where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})
+    static async cargarConsumo(idReceta : string, token : string){
+        let mail = await this.mailPorToken(token);
+        if (await UsuarioRecetaModel.findOne({where : {mail : mail, recetaId : idReceta}})){
+            let consumoActual = await UsuarioRecetaModel.findOne({where : {mail : mail, recetaId : idReceta}})
             consumoActual!.cantidad = consumoActual!.cantidad + 1
-            await UsuarioRecetaModel.update({cantidad : consumoActual!.cantidad}, {where : {mail : body.mail + "@gmail.com", recetaId : body.idReceta}})
+            await UsuarioRecetaModel.update({cantidad : consumoActual!.cantidad}, {where : {mail : mail, recetaId : idReceta}})
         }
         else{    
-        UsuarioRecetaModel.create({recetaId : body.idReceta, mail : body.mail + "@gmail.com", cantidad : 1});
+        UsuarioRecetaModel.create({recetaId : idReceta, mail : mail, cantidad : 1});
         }
     }
 
-    static async eliminarConsumo(mail : string, idReceta : number){
+    static async eliminarConsumo(token : string, idReceta : number){
 
-        const consumo = await UsuarioRecetaModel.findOne({where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+        let mail = await this.mailPorToken(token);
+        console.log("MAILBORRARCONSUMO: " + mail);
+        const consumo = await UsuarioRecetaModel.findOne({where : {mail : mail, recetaId : idReceta}})
+        console.log(consumo);
         if (consumo){
             if (consumo.cantidad > 1){
                 consumo.cantidad = consumo.cantidad - 1
-                await UsuarioRecetaModel.update({cantidad : consumo.cantidad}, {where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+                await UsuarioRecetaModel.update({cantidad : consumo.cantidad}, {where : {mail : mail, recetaId : idReceta}})
             }
             else{
-                await UsuarioRecetaModel.destroy({where : {mail : mail + "@gmail.com", recetaId : idReceta}})
+                await UsuarioRecetaModel.destroy({where : {mail : mail, recetaId : idReceta}})
             }
         }
 
     }
 
 
-    static async consumoUsuario(mail: string){
+    static async consumoUsuario(token: string){
 
-        mail = mail + "@gmail.com"
+        let mail = await this.mailPorToken(token);
 
         let consumos : any[] = [];
         let cantidades : number[] = [];
@@ -315,9 +323,9 @@ export  class controllerUsuario{
         return recetasData;
     }
 
-    static async like(mail: string, recetaId : number){
+    static async like(token: string, recetaId : number){
         
-        mail = mail + "@gmail.com"
+        let mail = await this.mailPorToken(token);
 
         LikeModel.create({mail : mail, recetaId: recetaId});
 
@@ -326,9 +334,9 @@ export  class controllerUsuario{
     }
 
 
-    static async isYaLikeada(mail: string, recetaId : number){
+    static async isYaLikeada(token: string, recetaId : number){
         
-        mail = mail + "@gmail.com"
+        let mail = await this.mailPorToken(token);
 
         const like = await LikeModel.findOne({where : {mail: mail, recetaId : recetaId}})
         if (like != null){
@@ -341,14 +349,52 @@ export  class controllerUsuario{
     }
 
 
-    static async borrarLike(mail : string, recetaId : number){
+    static async borrarLike(token : string, recetaId : number){
                 
-        mail = mail + "@gmail.com"
+        let mail = await this.mailPorToken(token);
         
         LikeModel.destroy({where : {mail: mail, recetaId : recetaId}})
         ModeloReceta.update({cantLikes : Sequelize.literal("cantLikes - 1")}, {where : {id : recetaId}})
 
+    }
 
+    static async nombrePorMail(mail: string){
+        
+        const usuario = await ModeloUsuario.findOne({where : {mail : mail}});
+        if (usuario != null){
+            return usuario.nombre;
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    static async verificado(token: string){
+        
+        let mail = await this.mailPorToken(token);
+        const usuario = await ModeloUsuario.findOne({where : {mail : mail}});
+        if (usuario != null){
+            return usuario.confirmado;
+        }
+        else{
+            return false;
+        }
+    }
+
+    static async reenviarVerificacion(token : string){
+        let mail = await this.mailPorToken(token)
+
+        const usuario = await ModeloUsuario.findOne({where : {mail : mail}});
+        if (usuario){
+            const tokenConfirmacion = usuario.tokenConfirmacion;
+            if (tokenConfirmacion){ 
+                sendConfirmationEmail(mail, tokenConfirmacion)
+            }
+        }
+        else{
+            throw new Error("No existe un usuario con ese correo electrónico.");
+        }
     }
 
 }

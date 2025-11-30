@@ -18,33 +18,42 @@ const jwt_decode_1 = require("jwt-decode");
 const ModeloReceta_1 = __importDefault(require("../models/ModeloReceta"));
 const ModeloLibroReceta_1 = __importDefault(require("../models/ModeloLibroReceta"));
 const LibroReceta_1 = __importDefault(require("../models/LibroReceta"));
+const controllerUsuario_1 = require("./controllerUsuario");
 class controllerLibro {
     static crearLibro(body, authHeader) {
         return __awaiter(this, void 0, void 0, function* () {
+            let token = "";
             if (authHeader) {
-                const token = authHeader && authHeader.split(' ')[1];
+                token = authHeader && authHeader.split(' ')[1];
                 console.log(token);
                 console.log(jsonwebtoken_1.default.verify(token, this.secretKey));
                 console.log("TOKEN: " + (0, jwt_decode_1.jwtDecode)(token));
             }
-            const payload = jsonwebtoken_1.default.verify(body.token, this.secretKey);
+            const payload = jsonwebtoken_1.default.verify(token, this.secretKey);
             const mail = payload.mail;
             body["mail"] = mail;
             const Libro = yield ModeloLibroReceta_1.default.create(body);
             return Libro.id;
         });
     }
-    static agregarReceta(body) {
+    static agregarReceta(body, token) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.verificarPropiedad(body.libroId, token))) {
+                throw new Error("El libro no pertenece al usuario");
+            }
             const vinculoAnterior = yield LibroReceta_1.default.findOne({ where: { libroId: body.libroId, recetaId: body.recetaId } });
             console.log(vinculoAnterior);
             if (vinculoAnterior == null) {
                 LibroReceta_1.default.create(body);
             }
+            return "Receta agregada al libro correctamente";
         });
     }
-    static recetasDeLibro(idLibro) {
+    static recetasDeLibro(idLibro, token) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.verificarPropiedad(+idLibro, token))) {
+                throw new Error("El libro no pertenece al usuario");
+            }
             let recetas = [];
             let recetasData = [];
             const respReceta = yield LibroReceta_1.default.findAll({ where: { libroId: idLibro } });
@@ -60,14 +69,20 @@ class controllerLibro {
             return recetasData;
         });
     }
-    static eliminarReceta(idLibro, idReceta) {
+    static eliminarReceta(idLibro, idReceta, token) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.verificarPropiedad(idLibro, token))) {
+                throw new Error("El libro no pertenece al usuario");
+            }
             const resp = yield LibroReceta_1.default.destroy({ where: { libroId: idLibro, recetaId: idReceta } });
         });
     }
-    static eliminarLibro(idLibro) {
+    static eliminarLibro(idLibro, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (!(yield this.verificarPropiedad(idLibro, token))) {
+                    throw new Error("El libro no pertenece al usuario");
+                }
                 yield LibroReceta_1.default.destroy({ where: { libroId: idLibro } });
                 const resp = yield ModeloLibroReceta_1.default.destroy({ where: { id: idLibro } });
                 return resp;
@@ -75,6 +90,29 @@ class controllerLibro {
             catch (error) {
                 console.log(error);
             }
+        });
+    }
+    static librosDeUsuario(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mail = yield controllerUsuario_1.controllerUsuario.mailPorToken(token);
+            const libros = yield ModeloLibroReceta_1.default.findAll({ where: { mail: mail } });
+            return libros;
+        });
+    }
+    static verificarPropiedad(idLibro, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mail = yield controllerUsuario_1.controllerUsuario.mailPorToken(token);
+            const libro = yield ModeloLibroReceta_1.default.findOne({ where: { id: idLibro, mail: mail } });
+            return libro !== null;
+        });
+    }
+    static modificarLibro(idLibro, body, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.verificarPropiedad(idLibro, token))) {
+                throw new Error("El libro no pertenece al usuario");
+            }
+            const resp = yield ModeloLibroReceta_1.default.update(body, { where: { id: idLibro } });
+            return "Libro modificado correctamente";
         });
     }
 }
