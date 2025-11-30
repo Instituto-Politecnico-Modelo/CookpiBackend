@@ -1,6 +1,6 @@
 // src/database.ts
 import { Sequelize } from "sequelize";
-
+/*
 const DB_NAME = process.env.MYSQLDATABASE || process.env.DB_NAME || "mysql";
 const DB_USER = process.env.MYSQLUSER || process.env.DB_USER || "root";
 const DB_PASS = process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || "1cb8cisrdjocflak";
@@ -41,5 +41,11 @@ export async function connectWithRetry(retries = 10, delayMs = 3000) {
   }
   throw new Error("Unable to connect to the database after retries.");
 }
+*/
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'database.sqlite',
+  logging: false, 
+});
 
 export default sequelize;

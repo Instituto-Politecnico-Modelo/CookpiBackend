@@ -7,49 +7,52 @@ import RecetaIngredienteModel from '../models/RecetaIngredienteModel';
 import LibroRecetaModel from '../models/LibroReceta';
 import { Model, Op } from 'sequelize';
 import IngredienteModel from '../models/ModeloIngrediente';
+import { controllerUsuario } from './controllerUsuario';
+import { error } from 'console';
 
 export class controllerReceta{
 
     static secretKey = "Ensaladardamal"
 
-    static async crearReceta(body : any, authHeader: string | undefined){
+    static async crearReceta(body : any, authHeader: string){
         
-        if (authHeader){    
-            const token = authHeader && authHeader.split(' ')[1];
-            console.log(token)
-            console.log(jwt.verify(token, this.secretKey))
-            console.log("TOKEN: " + jwtDecode(token));
+        let usuarioMail: string = "";
+        
+            
+        const token = authHeader && authHeader.split(' ')[1];
+        try {
+            const decoded = jwt.verify(token, this.secretKey) as JwtPayload;
+            usuarioMail = decoded.mail || decoded.sub;
+            console.log("Usuario creador:", usuarioMail);
+             console.log("###############");
+        
+            body["calorias"] = 0
+            body["proteinas"] = 0
+            body["grasas"] = 0
+            body["carbohidratos"] = 0
+        
+        
+            body["usuarioCreadorId"] = usuarioMail;
+        
+
+            for (const ingrediente of body.ingredientes) {
+            const calorias = await controllerIngrediente.obtenerCaloriasPorBarcode(ingrediente.codigo) ?? 0;
+            const proteinas = await controllerIngrediente.obtenerProteinasPorBarcode(ingrediente.codigo) ?? 0;
+            const grasas = await controllerIngrediente.obtenerGrasasPorBarcode(ingrediente.codigo) ?? 0;
+            const carbohidratos = await controllerIngrediente.obtenerCarbohidratosPorBarcode(ingrediente.codigo) ?? 0;
+
+            body.calorias += calorias * ingrediente.cantidad / 100;
+            body.proteinas += proteinas * ingrediente.cantidad / 100;
+            body.grasas += grasas * ingrediente.cantidad / 100;
+            body.carbohidratos  += carbohidratos * ingrediente.cantidad / 100;
         }
-        console.log("###############");
-        
-        body["calorias"] = 0
-        body["proteinas"] = 0
-        body["grasas"] = 0
-        body["carbohidratos"] = 0
-
-        for (const ingrediente of body.ingredientes) {
-        const calorias = await controllerIngrediente.obtenerCaloriasPorBarcode(ingrediente.codigo) ?? 0;
-        const proteinas = await controllerIngrediente.obtenerProteinasPorBarcode(ingrediente.codigo) ?? 0;
-        const grasas = await controllerIngrediente.obtenerGrasasPorBarcode(ingrediente.codigo) ?? 0;
-        const carbohidratos = await controllerIngrediente.obtenerCarbohidratosPorBarcode(ingrediente.codigo) ?? 0;
-
-        body.calorias += calorias * ingrediente.cantidad / 100;
-        body.proteinas += proteinas * ingrediente.cantidad / 100;
-        body.grasas += grasas * ingrediente.cantidad / 100;
-        body.carbohidratos  += carbohidratos * ingrediente.cantidad / 100;
-    }
     
-    const receta = await ModeloReceta.create(
-        body
-    );
-
-
-    
+        const receta = await ModeloReceta.create(
+            body
+        );
 
         let tablaIntermedia = {"recetaId" : receta.id, ingredienteId:"", cantidad:0}
         
-
-
         for (const ingrediente of body.ingredientes) {
 
             tablaIntermedia.ingredienteId = ingrediente.codigo;
@@ -59,6 +62,11 @@ export class controllerReceta{
         }
 
         return receta.id;
+        } catch (error) {
+            console.error("Error al crear la receta:", error);
+        }
+        
+       
 
     }
 
@@ -138,4 +146,22 @@ export class controllerReceta{
         const indiceAleatorio = Math.floor(Math.random() * recetas.length);
         return recetas[indiceAleatorio];
     }
+
+
+    static async editarReceta(idReceta : number, body : any, authHeader: string){
+
+        let mail =await controllerUsuario.mailPorToken(authHeader as string);
+
+        const receta = await ModeloReceta.findOne({where: {id : idReceta, usuarioCreadorId : mail }})
+
+        if(receta){
+            await ModeloReceta.update(body, {where: {id : idReceta}})
+            return "Receta actualizada correctamente";
+        }
+        else {
+            throw new Error("No tienes permiso para editar esta receta");
+        }
+
+    }
+
 }

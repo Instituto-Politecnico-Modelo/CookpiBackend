@@ -14,49 +14,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.controllerReceta = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwt_decode_1 = require("jwt-decode");
 const ModeloReceta_1 = __importDefault(require("../models/ModeloReceta"));
 const controllerIngrediente_1 = require("./controllerIngrediente");
 const RecetaIngredienteModel_1 = __importDefault(require("../models/RecetaIngredienteModel"));
 const LibroReceta_1 = __importDefault(require("../models/LibroReceta"));
 const sequelize_1 = require("sequelize");
 const ModeloIngrediente_1 = __importDefault(require("../models/ModeloIngrediente"));
+const controllerUsuario_1 = require("./controllerUsuario");
 class controllerReceta {
     static crearReceta(body, authHeader) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d;
-            if (authHeader) {
-                const token = authHeader && authHeader.split(' ')[1];
-                console.log(token);
-                console.log(jsonwebtoken_1.default.verify(token, this.secretKey));
-                console.log("TOKEN: " + (0, jwt_decode_1.jwtDecode)(token));
+            let usuarioMail = "";
+            const token = authHeader && authHeader.split(' ')[1];
+            try {
+                const decoded = jsonwebtoken_1.default.verify(token, this.secretKey);
+                usuarioMail = decoded.mail || decoded.sub;
+                console.log("Usuario creador:", usuarioMail);
+                console.log("###############");
+                body["calorias"] = 0;
+                body["proteinas"] = 0;
+                body["grasas"] = 0;
+                body["carbohidratos"] = 0;
+                body["usuarioCreadorId"] = usuarioMail;
+                for (const ingrediente of body.ingredientes) {
+                    const calorias = (_a = yield controllerIngrediente_1.controllerIngrediente.obtenerCaloriasPorBarcode(ingrediente.codigo)) !== null && _a !== void 0 ? _a : 0;
+                    const proteinas = (_b = yield controllerIngrediente_1.controllerIngrediente.obtenerProteinasPorBarcode(ingrediente.codigo)) !== null && _b !== void 0 ? _b : 0;
+                    const grasas = (_c = yield controllerIngrediente_1.controllerIngrediente.obtenerGrasasPorBarcode(ingrediente.codigo)) !== null && _c !== void 0 ? _c : 0;
+                    const carbohidratos = (_d = yield controllerIngrediente_1.controllerIngrediente.obtenerCarbohidratosPorBarcode(ingrediente.codigo)) !== null && _d !== void 0 ? _d : 0;
+                    body.calorias += calorias * ingrediente.cantidad / 100;
+                    body.proteinas += proteinas * ingrediente.cantidad / 100;
+                    body.grasas += grasas * ingrediente.cantidad / 100;
+                    body.carbohidratos += carbohidratos * ingrediente.cantidad / 100;
+                }
+                const receta = yield ModeloReceta_1.default.create(body);
+                let tablaIntermedia = { "recetaId": receta.id, ingredienteId: "", cantidad: 0 };
+                for (const ingrediente of body.ingredientes) {
+                    tablaIntermedia.ingredienteId = ingrediente.codigo;
+                    tablaIntermedia.cantidad = ingrediente.cantidad;
+                    RecetaIngredienteModel_1.default.create(tablaIntermedia);
+                }
+                return receta.id;
             }
-            console.log("###############");
-            body["calorias"] = 0;
-            body["proteinas"] = 0;
-            body["grasas"] = 0;
-            body["carbohidratos"] = 0;
-            for (const ingrediente of body.ingredientes) {
-                const calorias = (_a = yield controllerIngrediente_1.controllerIngrediente.obtenerCaloriasPorBarcode(ingrediente.codigo)) !== null && _a !== void 0 ? _a : 0;
-                const proteinas = (_b = yield controllerIngrediente_1.controllerIngrediente.obtenerProteinasPorBarcode(ingrediente.codigo)) !== null && _b !== void 0 ? _b : 0;
-                const grasas = (_c = yield controllerIngrediente_1.controllerIngrediente.obtenerGrasasPorBarcode(ingrediente.codigo)) !== null && _c !== void 0 ? _c : 0;
-                const carbohidratos = (_d = yield controllerIngrediente_1.controllerIngrediente.obtenerCarbohidratosPorBarcode(ingrediente.codigo)) !== null && _d !== void 0 ? _d : 0;
-                body.calorias += calorias * ingrediente.cantidad / 100;
-                body.proteinas += proteinas * ingrediente.cantidad / 100;
-                body.grasas += grasas * ingrediente.cantidad / 100;
-                body.carbohidratos += carbohidratos * ingrediente.cantidad / 100;
+            catch (error) {
+                console.error("Error al crear la receta:", error);
             }
-            const payload = jsonwebtoken_1.default.verify(body.token, this.secretKey);
-            const mail = payload.mail;
-            body["mailUsuario"] = mail;
-            const receta = yield ModeloReceta_1.default.create(body);
-            let tablaIntermedia = { "recetaId": receta.id, ingredienteId: "", cantidad: 0 };
-            for (const ingrediente of body.ingredientes) {
-                tablaIntermedia.ingredienteId = ingrediente.codigo;
-                tablaIntermedia.cantidad = ingrediente.cantidad;
-                RecetaIngredienteModel_1.default.create(tablaIntermedia);
-            }
-            return receta.id;
         });
     }
     static obtenerRecetasPorLibro(idL) {
@@ -125,6 +127,19 @@ class controllerReceta {
             const recetas = yield ModeloReceta_1.default.findAll();
             const indiceAleatorio = Math.floor(Math.random() * recetas.length);
             return recetas[indiceAleatorio];
+        });
+    }
+    static editarReceta(idReceta, body, authHeader) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let mail = yield controllerUsuario_1.controllerUsuario.mailPorToken(authHeader);
+            const receta = yield ModeloReceta_1.default.findOne({ where: { id: idReceta, usuarioCreadorId: mail } });
+            if (receta) {
+                yield ModeloReceta_1.default.update(body, { where: { id: idReceta } });
+                return "Receta actualizada correctamente";
+            }
+            else {
+                throw new Error("No tienes permiso para editar esta receta");
+            }
         });
     }
 }

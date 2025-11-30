@@ -34,6 +34,8 @@ class ModeloReceta extends Model {
 
     public dieta!: String;
 
+    public usuarioCreadorId!: string;
+
 }
 
 
@@ -87,6 +89,14 @@ ModeloReceta.init(
     momentoDelDia: {
       type: DataTypes.STRING,
       allowNull: true,  
+    },
+    usuarioCreadorId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'Usuario',
+        key: 'mail',
+      }
     },
 
 

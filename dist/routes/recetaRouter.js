@@ -76,4 +76,14 @@ exports.RecetaRouter.get("/del/dia", (req, res) => __awaiter(void 0, void 0, voi
         res.status(500).send("Error al obtener la receta del día");
     }
 }));
+exports.RecetaRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const respuestaBack = yield controllerReceta_1.controllerReceta.editarReceta(+req.params.id, req.body, req.headers['authorization']);
+        res.send(respuestaBack);
+    }
+    catch (error) {
+        console.error("Error al editar la receta:", error);
+        res.status(500).send("Error al editar la receta: " + error);
+    }
+}));
 //# sourceMappingURL=recetaRouter.js.map

@@ -14,11 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LibroRouter = void 0;
 const express_1 = __importDefault(require("express"));
+const middleware_1 = require("../middleware/middleware");
 const controllerLibroReceta_1 = require("../controllers/controllerLibroReceta");
 const ModeloLibroReceta_1 = __importDefault(require("../models/ModeloLibroReceta"));
 exports.LibroRouter = express_1.default.Router();
-exports.LibroRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.LibroRouter.post('/', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.headers['authorization']);
         res.send(yield controllerLibroReceta_1.controllerLibro.crearLibro(req.body, req.headers['authorization']));
     }
     catch (error) {
@@ -26,7 +28,7 @@ exports.LibroRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).send("Error al crear libro");
     }
 }));
-exports.LibroRouter.get('/porid/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.LibroRouter.get('/porid/:id', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.send(yield ModeloLibroReceta_1.default.findOne({ where: { id: req.params.id } }));
     }
@@ -34,25 +36,26 @@ exports.LibroRouter.get('/porid/:id', (req, res) => __awaiter(void 0, void 0, vo
         res.status(500).send("Error al obtener libro por ID");
     }
 }));
-exports.LibroRouter.get('/recetas/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.LibroRouter.get('/recetas/:id', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerLibroReceta_1.controllerLibro.recetasDeLibro(req.params.id));
+        res.send(yield controllerLibroReceta_1.controllerLibro.recetasDeLibro(req.params.id, req.headers['authorization']));
     }
     catch (error) {
         res.status(500).send("Error al obtener recetas de libro");
     }
 }));
-exports.LibroRouter.get('/pormail/:mail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.LibroRouter.get('/', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield ModeloLibroReceta_1.default.findAll({ where: { mail: req.params.mail + "@gmail.com" } }));
+        res.send(yield controllerLibroReceta_1.controllerLibro.librosDeUsuario(req.headers['authorization']));
     }
     catch (error) {
+        console.error("Error al obtener libros por mail:", error);
         res.status(500).send("Error al obtener libros por mail");
     }
 }));
-exports.LibroRouter.post('/agregarReceta', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.LibroRouter.post('/agregarReceta', middleware_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerLibroReceta_1.controllerLibro.agregarReceta(req.body));
+        res.send(yield controllerLibroReceta_1.controllerLibro.agregarReceta(req.body, req.headers['authorization']));
     }
     catch (error) {
         console.error("Error al agregar receta al libro:", error);
@@ -61,7 +64,7 @@ exports.LibroRouter.post('/agregarReceta', (req, res) => __awaiter(void 0, void 
 }));
 exports.LibroRouter.delete('/eliminarReceta/:idLibro/:idReceta', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerLibroReceta_1.controllerLibro.eliminarReceta(+req.params.idLibro, +req.params.idReceta));
+        res.send(yield controllerLibroReceta_1.controllerLibro.eliminarReceta(+req.params.idLibro, +req.params.idReceta, req.headers['authorization']));
     }
     catch (error) {
         console.error("Error al eliminar receta del libro:", error);
@@ -70,7 +73,23 @@ exports.LibroRouter.delete('/eliminarReceta/:idLibro/:idReceta', (req, res) => _
 }));
 exports.LibroRouter.delete('/:idLibro', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.send(yield controllerLibroReceta_1.controllerLibro.eliminarLibro(+req.params.idLibro));
+        res.send(yield controllerLibroReceta_1.controllerLibro.eliminarLibro(+req.params.idLibro, req.headers['authorization']));
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+}));
+exports.LibroRouter.get('/verificarPropiedad/:idLibro', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.send(yield controllerLibroReceta_1.controllerLibro.verificarPropiedad(+req.params.idLibro, req.headers['authorization']));
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+}));
+exports.LibroRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.send(yield controllerLibroReceta_1.controllerLibro.modificarLibro(+req.params.id, req.body, req.headers['authorization']));
     }
     catch (error) {
         res.status(500).send(error);
